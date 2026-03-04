@@ -115,15 +115,40 @@ La Figura siguiente muestra la tabla espacial mpios_kml almacenada en el esquema
 
 En la imagen se observa que los registros cumplen con las condiciones establecidas: ausencia de nombres compuestos y localización dentro del buffer de 40 km.
 
----
+
+# Visualización en Google Earth
+
+La siguiente figura muestra la correcta visualización del archivo KML exportado desde QGIS y cargado en Google Earth.
+
+![Visualización del archivo KMZ en Google Earth](visualizacion_google_earth.png){width=80%}
+
+Se observa que las geometrías se representan correctamente sobre el globo terrestre, confirmando que el archivo fue exportado en coordenadas geográficas WGS84 (EPSG:4326).
+
+
+# Previsualización gráfica en PostGIS
+
+La siguiente figura muestra la capa mpios_kml cargada desde PostgreSQL/PostGIS y visualizada en QGIS.
+
+![Previsualización gráfica de la capa mpios_kml en PostGIS](previsualizacion_postgis.png){width=80%}
+
+La visualización confirma que los registros almacenados en la base de datos mantienen integridad geométrica y cumplen las reglas de filtrado definidas en el proceso ETL.
+
 
 # Reflexión sobre Interoperabilidad
 
-Durante la carga de datos en PostgreSQL/PostGIS se evidenció que ArcGIS Pro presenta restricciones al escribir en bases de datos nativas cuando no se utiliza una Enterprise Geodatabase habilitada.
+El desarrollo del ejercicio demostró la capacidad de QGIS para actuar como herramienta integral dentro de un flujo profesional de datos espaciales.
 
-El ERROR 000210 no se relaciona con el shapefile en sí, sino con la gestión de esquemas y permisos en PostgreSQL. ArcGIS Pro intenta crear la tabla en el esquema asociado al usuario conectado, lo que puede generar conflictos si el esquema no existe o no posee los permisos adecuados.
+QGIS permitió:
 
-QGIS facilita la interoperabilidad al permitir especificar directamente el esquema de destino y escribir en bases de datos PostgreSQL/PostGIS sin configuraciones adicionales. En este contexto, QGIS actúa como una herramienta puente que garantiza la transferencia efectiva de datos entre plataformas comerciales y sistemas de bases de datos espaciales abiertos.
+- Transformar sistemas de referencia.
+- Aplicar filtros alfanuméricos y espaciales.
+- Generar buffers métricos con precisión.
+- Conectarse directamente a PostgreSQL/PostGIS.
+- Crear tablas espaciales en el esquema public sin configuraciones adicionales complejas.
+
+La interoperabilidad se evidenció en la transición entre formatos como Shapefile, KML y base de datos PostGIS, manteniendo consistencia geométrica y estructural.
+
+El uso exclusivo de software de código abierto demuestra que es posible implementar flujos ETL espaciales profesionales sin depender de licencias comerciales, garantizando compatibilidad con estándares abiertos (OGC) y facilitando la portabilidad de los datos.
 
 ---
 
