@@ -28,8 +28,9 @@ Este repositorio documenta el desarrollo del Taller 4, enfocado en:
 - `informe.pdf` → Versión renderizada en PDF  
 - `captura_postgis.png` → Evidencia tabular de carga en PostGIS  
 - `previsualizacion_postgis.png` → Visualización gráfica desde PostGIS  
-- `visualizacion_google_earth.png` → Visualización del KMZ en Google Earth  
-- `mfebelvis_kml.kmz` → Archivo generado en el Ejercicio 1  
+- `visualizacion_google_earth.png` → Visualización del KML en Google Earth  
+- `mfebelvis_kml.kml` → Archivo generado en el Ejercicio 1
+- `mpios_kml.kml` → Archivo generado a partir de los filtros
 
 ## Flujo aplicado
 
