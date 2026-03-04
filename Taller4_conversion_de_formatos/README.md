@@ -24,7 +24,7 @@ Este repositorio documenta el desarrollo del Taller 4, enfocado en:
 - `informe.html` → Versión renderizada en HTML  
 - `informe.pdf` → Versión renderizada en PDF  
 - `captura_postgis.png` → Evidencia de carga en PostGIS  
-- `resultado_ej1.kmz` → Archivo generado en el Ejercicio 1  
+- `mfebelvis_kml` → Archivo generado en el Ejercicio 1  
 
 ## Flujo aplicado
 
