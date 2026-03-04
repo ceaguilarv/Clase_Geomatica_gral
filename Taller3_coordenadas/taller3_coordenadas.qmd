@@ -1,0 +1,130 @@
+---
+title: "Taller 3 — Sistemas de Coordenadas (QGIS) — Evidencia"
+author: "Carlos E Aguilar Vargas"
+format:
+  html:
+    toc: true
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+## 1. Objetivo
+
+Realizar la práctica de **sistemas de coordenadas** utilizando **QGIS** (equivalente a los procedimientos descritos para ArcGIS Pro), con énfasis en:
+
+- Identificación y asignación de CRS a capas sin proyección definida.
+- Reproyección de capas y verificación de **proyección al vuelo**.
+- Comparación de coordenadas/distancias derivadas de diferentes definiciones/procesos.
+- Elaboración de tabla de sistemas de coordenadas con código **EPSG**.
+
+---
+
+## 2. Insumos del taller
+
+### 2.1 Archivos suministrados
+
+- `cundinamarca.shp`
+- `veredas.shp`
+
+### 2.2 CRS detectado inicialmente en QGIS (Propiedades → Fuente)
+
+- `cundinamarca.shp`: **Sin SRC / Unknown**
+- `veredas.shp`: **Sin SRC / Unknown**
+
+---
+
+## 3. Tabla de sistemas de coordenadas (Colombia)
+
+| Sistema / Nombre | Tipo | Descripción / uso | EPSG |
+|---|---|---|---|
+| GCS_Bogota | Geográfico | Sistema geográfico asociado al **Datum Bogotá** (uso histórico/legacy en Colombia). | EPSG:4218 |
+| Colombia Bogota Zone | Proyectado | Sistema **plano** (en metros) usado como zona/origen para Bogotá (proyección TM/GK según definición del CRS). | EPSG:3116 |
+| MAGNA-SIRGAS (geográfico) | Geográfico | Sistema moderno oficial en Colombia (referencia actual), útil para interoperabilidad y consistencia nacional. | EPSG:4686 |
+| MAGNA-SIRGAS Bogotá | Proyectado | Proyección plana para Bogotá (en este ejercicio se utiliza el CRS reportado). | EPSG:3116 |
+
+---
+
+## 4. Procedimiento (equivalente QGIS)
+
+### 4.1 Definir proyección (equivalente a *Define Projection* de ArcGIS)
+
+Dado que `cundinamarca.shp` y `veredas.shp` aparecen como **Sin SRC / Unknown**, se realizó la asignación de CRS en QGIS (esto **no reproyecta**, solo define el sistema correcto para interpretar las coordenadas).
+
+**En QGIS:**
+1. Clic derecho sobre la capa → **Propiedades** →  → SRC de la capa.
+2. Si está en “Unknown”, aplicar:
+   - **Desde el toolbox → asignar proyeccion** .
+3. Buscar y seleccionar el CRS correspondiente según el ejercicio.
+
+**CRS asignados (según configuración del taller):**
+- Para capas en datum Bogotá: `GCS_Bogota (EPSG:4218)`.
+- Para capas en planas Bogotá: `Colombia Bogota Zone (EPSG:3116)`.
+
+> Nota: si se requiere dejar el CRS “escrito” en el archivo (crear `.prj`), se recomienda **Exportar → Guardar objetos como…** y guardar una copia con el CRS correctamente definido.
+
+---
+
+### 4.2 Reproyectar capa (equivalente a *Project* de ArcGIS)
+
+La reproyección **sí transforma** coordenadas entre CRS (crea un archivo nuevo).
+
+**En QGIS:**
+- Clic derecho en la capa → **en el toolbox → reproyectar capa**
+- Seleccionar CRS de destino (por ejemplo, `EPSG:3116` o `EPSG:4686`)
+- Guardar salida (recomendado en GeoPackage o Shapefile ).
+
+**Consideración técnica (transformación geográfica):**
+- Cuando se cambia **solo de geográfico a proyectado** manteniendo el mismo datum, normalmente basta con la transformación de proyección.
+- Cuando existe cambio de datum (por ejemplo, datum Bogotá ↔ MAGNA-SIRGAS), QGIS puede requerir escoger una **repoyeccion** apropiada .
+
+---
+
+### 4.3 Proyección al vuelo (On-the-fly)
+
+QGIS permite que capas con diferentes CRS se visualicen correctamente en un mismo proyecto.
+
+**Verificación:**
+1. Definir el CRS del proyecto (abajo a la derecha) a un CRS de trabajo.
+2. Añadir capas con CRS diferente.
+3. Confirmar que se superponen visualmente (sin modificar los archivos originales).
+
+---
+
+## 5. Comparación y diferencia (resultado del ejercicio)
+
+### 5.1 Punto común
+
+- Municipio: **El Colegio**
+- Código: **245**
+- Método para punto representativo: **Centroide**
+
+### 5.2 Medición
+
+Se utilizó la herramienta de QGIS **“Medir distancia entre dos puntos”** entre los puntos comparados.
+
+**Resultado de distancia:**
+
+- Distancia = **0,071870529448677584 m**
+
+**Interpretación:**
+La diferencia obtenida es del orden de **centímetros**, lo que puede corresponder a variaciones por definición/transformación de CRS, redondeos numéricos, y/o metodología de generación del punto (centroide) y medición.
+
+---
+
+## 6. Respuestas 
+
+### 6.1 ¿GCS_Bogota es geográfico o proyectado?
+**Respuesta:**  
+`GCS_Bogota (EPSG:4218)` es un sistema **geográfico**, expresado en **grados** (latitud/longitud), asociado al Datum Bogotá.
+
+### 6.2 ¿Colombia Bogota Zone es geográfico o proyectado? ¿A cuál origen corresponde?
+**Respuesta:**  
+`Colombia Bogota Zone (EPSG:3116)` es un sistema **proyectado**, expresado en **metros**, asociado a la zona/origen de Bogotá según la definición del CRS.
+
+### 6.3 Diferencia entre Datum Bogotá y MAGNA-SIRGAS
+**Respuesta:**  
+Datum Bogotá corresponde a un sistema **histórico** usado en cartografía tradicional, mientras que MAGNA-SIRGAS es la referencia **moderna oficial** en Colombia, compatible con marcos geodésicos contemporáneos. Al cambiar entre ambos puede requerirse una **transformación geográfica** y pueden presentarse desplazamientos (según zona y parámetros).
+
+---

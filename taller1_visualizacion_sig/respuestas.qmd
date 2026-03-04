@@ -1,0 +1,65 @@
+---
+title: "Taller 1 — SIG Visualización"
+author: "Carlos E Aguilar Vargas"
+format:
+  html:
+    toc: true
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+## Parte 1 — Evidencia de reproducibilidad
+
+En este taller se ejecutaron los 4 notebooks solicitados:
+
+- `01_py_estatico.ipynb` (GeoPandas + nybb + `.plot()`)
+- `02_py_dinamico.ipynb` (Leafmap + GeoJSON + Geemap)
+- `03_r_estatico.ipynb` (sf + tmap)
+- `04_r_dinamico.ipynb` (sf + mapview)
+
+> Nota: En algunos entornos, la visualización dinámica puede variar según el kernel o el navegador. La ejecución del código y la generación de salidas fue verificada.
+
+---
+
+## Parte 2 — Exploración (Geemap: Elevación SRTM)
+
+### Implementación
+
+```{python}
+#| label: parteB_geemap_srtm
+#| eval: false
+import geemap
+import ee
+
+try:
+    ee.Initialize()
+except Exception:
+    ee.Authenticate()
+    ee.Initialize()
+
+m = geemap.Map(center=[4.63, -74.08], zoom=8)
+
+srtm = ee.Image("USGS/SRTMGL1_003")
+
+vis = {"min": 0, "max": 3500}
+
+m.addLayer(srtm, vis, "Elevación SRTM (m)")
+m.add_colorbar(vis, label="Elevación (m)")
+
+m
+```
+## Parte 3 - Preguntas de análisis
+
+### 1)  Facilidad e intuición
+De las cuatro herramientas usadas, la más intuitiva para alguien sin experiencia en programación fue **`mapview` en R**, porque permite visualizar objetos espaciales con una sola línea y ofrece controles (capas, zoom y mapas base) sin configuración adicional. En segundo lugar, **`leafmap`** resulta muy amigable por su sintaxis directa y porque “piensa” como un visor web. En contraste, **`geemap`** es más exigente porque depende de Google Earth Engine (autenticación, colecciones, filtros), aunque es la más potente para procesamiento masivo y análisis con datos satelitales en la nube.
+
+### 2) Calidad cartográfica (PDF)
+Para un informe técnico en **PDF**, el motor que genera mapas estáticos con mejor acabado es **`tmap`**, porque está diseñado específicamente para cartografía temática: maneja bien leyendas, escalas, brújula, paletas y composición de mapa. **`ggplot2`** también puede producir resultados excelentes, especialmente cuando el mapa se integra con gráficos estadísticos y se requiere control fino de estilo; sin embargo, suele demandar más configuración. **`geopandas.plot`** (matplotlib) es funcional y rápido, pero por defecto ofrece menos elementos cartográficos y requiere más ajuste manual para llegar a un estándar editorial.
+
+### 3) Potencial de la documentación OpenGeos
+Al revisar la documentación del ecosistema OpenGeos, una funcionalidad avanzada útil para un proyecto final es el uso de **capas ráster y análisis derivados directamente en el visor** (por ejemplo, cargar DEMs y generar productos como **pendiente** o visualizaciones temáticas), así como la integración con catálogos y datasets remotos. En particular, el enfoque de `geemap` facilita conectar datos satelitales (p. ej., SRTM, uso/cobertura, colecciones temporales) y mostrarlos de forma interactiva, lo que acelera validación y comunicación de resultados.
+
+### 4) Elección de herramientas (emergencia ambiental, visor web en <5 min)
+Elegiría **`leafmap`** para desplegar un visor web rápido porque permite cargar capas vectoriales/GeoJSON en minutos, con mapas base y controles de navegación listos para usuarios no técnicos. Si la emergencia depende de imágenes satelitales recientes (inundación, incendios), usaría **`geemap`** por su acceso directo a colecciones en la nube. En ambos casos, priorizo rapidez, simplicidad de uso y posibilidad de compartir un enlace/visor inmediatamente.

@@ -1,0 +1,57 @@
+---
+title: "Geoportales y Servicios Web (OGC) — Evidencia"
+author: "Carlos E Aguilar Vargas"
+format:
+  html:
+    toc: true
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+---
+## 1. Tabla de fuentes (local + servicios OGC)
+
+| Tipo | Fuente (Nombre) | URL / Ruta | Capa (si aplica) | CRS/EPSG |
+|---|---|---|---|---|
+| WMS | IGAC — Cartografía básica escala 1:1000 (Municipio de La Vega, Cundinamarca) | [WMSServer](https://mapas2.igac.gov.co/server/services/carto/carto1000lavega25402000/MapServer/WMSServer?) | Drenaje_R | EPSG:4326 |
+| WFS | IGAC — Cartografía básica escala 1:1000 (Municipio de La Vega, Cundinamarca) | [WFSServer](https://mapas2.igac.gov.co/server/services/carto/carto1000lavega25402000/MapServer/WFSServer?) | Vias_R | EPSG:9377 |
+| WCS | IGAC — Ortoimagen La Montañita (Caquetá) | [WCSServer](https://mapas2.igac.gov.co/image/services/orto/orto18410lamontanita/ImageServer/WCSServer?) | orto18410_NDVI | EPSG:9377 |
+| Shapefile | vias_valledupar (local) | `data/municipios_colombia.shp` | municipios_colombia | EPSG:9377 |
+| GeoTIFF | mapa_aptitud_maranon_final (local) | `data/mapa_aptitud_maranon_final.tif` | raster | EPSG:9377 |
+
+## 2. Productos cartográficos
+
+### 2.1 Mapa exportado desde QGIS
+
+
+![](Mapa_final.png){width=90%}
+
+
+## 3. Cuestionario de análisis
+
+### 3.1 ¿Qué archivos/servicios permiten la edición de geometrías directamente?
+**Respuesta:**  
+Los que permiten edición directa son los **datos vectoriales locales** (por ejemplo, un **Shapefile** cargado desde disco, como `municipios_colombia.shp`), siempre que se habilite el modo de edición en el software (QGIS/ArcGIS Pro).  
+En cuanto a servicios OGC, un **WFS** normalmente permite consultar entidades y atributos; la edición directa depende de que el servicio esté configurado como **WFS-T** (transaccional) y de que el usuario tenga permisos en el servidor.  
+Un **WMS/WMTS** no permite edición porque entrega mapas como **imágenes**.
+
+### 3.2 ¿Cuáles permiten acceso a la tabla de atributos? Describa tres campos de uno de ellos.
+**Respuesta:**  
+Permiten acceso a la tabla de atributos los **vectoriales** (como Shapefile/GeoPackage) y los servicios **WFS** (porque entregan entidades con geometría y atributos).  
+Para este ejercicio se usó el **Shapefile** `municipios_colombia.shp`. Tres campos reales son:
+
+- `MPIO_CCDGO`: código del municipio según el DANE.  
+- `MPIO_CNMBR`: nombre del municipio.  
+- `DPTO_CCDGO`: código del departamento según el DANE.
+
+### 3.3 ¿En qué casos fue posible cambiar la simbología desde el software cliente?
+**Respuesta:**  
+Fue posible cambiar la simbología cuando se trabajó con **datos locales** (Shapefile y GeoTIFF) y con **WFS/WCS**, porque el cliente recibe los datos y puede representarlos libremente (cambiar colores, grosores, clasificación, simbología categorizada, etc.).  
+En cambio, en **WMS/WMTS** la simbología viene definida en el servidor y el cliente recibe una **imagen renderizada**, por lo que solo es posible ajustar aspectos como el orden de capas, transparencia o estilos disponibles (si el servidor los publica), pero no re-simbolizar a nivel de entidades.
+
+### 3.4 ¿Por qué es preferible usar un WFS sobre un Shapefile descargado en proyectos a largo plazo?
+**Respuesta:**  
+Porque un **WFS** consume una fuente viva y oficial, lo que ayuda a mantener información actualizada, evita múltiples copias desfasadas del mismo dato y mejora la trazabilidad (misma URL para todo el equipo).  
+En proyectos a largo plazo, usar WFS reduce inconsistencias por versiones locales, facilita la reproducibilidad (URL + capa documentadas) y disminuye el riesgo de trabajar con un Shapefile desactualizado.
+
+---
