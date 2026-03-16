@@ -1,0 +1,270 @@
+{
+  "result": "0",
+  "values": {
+    "1": {
+      "constantValue": [
+        "B8",
+        "B4"
+      ]
+    },
+    "2": {
+      "functionInvocationValue": {
+        "functionName": "Collection.filter",
+        "arguments": {
+          "collection": {
+            "functionInvocationValue": {
+              "functionName": "ImageCollection.load",
+              "arguments": {
+                "id": {
+                  "constantValue": "COPERNICUS/S2_SR_HARMONIZED"
+                }
+              }
+            }
+          },
+          "filter": {
+            "functionInvocationValue": {
+              "functionName": "Filter.intersects",
+              "arguments": {
+                "leftField": {
+                  "constantValue": ".all"
+                },
+                "rightValue": {
+                  "functionInvocationValue": {
+                    "functionName": "Feature",
+                    "arguments": {
+                      "geometry": {
+                        "functionInvocationValue": {
+                          "functionName": "Geometry.buffer",
+                          "arguments": {
+                            "distance": {
+                              "constantValue": 1500
+                            },
+                            "geometry": {
+                              "functionInvocationValue": {
+                                "functionName": "GeometryConstructors.Point",
+                                "arguments": {
+                                  "coordinates": {
+                                    "constantValue": [
+                                      -74.110149,
+                                      4.521001
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "3": {
+      "constantValue": "system:time_start"
+    },
+    "5": {
+      "constantValue": "CLOUDY_PIXEL_PERCENTAGE"
+    },
+    "4": {
+      "functionInvocationValue": {
+        "functionName": "Filter.lessThan",
+        "arguments": {
+          "leftField": {
+            "valueReference": "5"
+          },
+          "rightValue": {
+            "constantValue": 15
+          }
+        }
+      }
+    },
+    "0": {
+      "functionInvocationValue": {
+        "functionName": "Image.rename",
+        "arguments": {
+          "input": {
+            "functionInvocationValue": {
+              "functionName": "Image.subtract",
+              "arguments": {
+                "image1": {
+                  "functionInvocationValue": {
+                    "functionName": "Image.rename",
+                    "arguments": {
+                      "input": {
+                        "functionInvocationValue": {
+                          "functionName": "Image.normalizedDifference",
+                          "arguments": {
+                            "bandNames": {
+                              "valueReference": "1"
+                            },
+                            "input": {
+                              "functionInvocationValue": {
+                                "functionName": "Collection.first",
+                                "arguments": {
+                                  "collection": {
+                                    "functionInvocationValue": {
+                                      "functionName": "Collection.limit",
+                                      "arguments": {
+                                        "collection": {
+                                          "functionInvocationValue": {
+                                            "functionName": "Collection.filter",
+                                            "arguments": {
+                                              "collection": {
+                                                "functionInvocationValue": {
+                                                  "functionName": "Collection.filter",
+                                                  "arguments": {
+                                                    "collection": {
+                                                      "valueReference": "2"
+                                                    },
+                                                    "filter": {
+                                                      "functionInvocationValue": {
+                                                        "functionName": "Filter.dateRangeContains",
+                                                        "arguments": {
+                                                          "leftValue": {
+                                                            "functionInvocationValue": {
+                                                              "functionName": "DateRange",
+                                                              "arguments": {
+                                                                "end": {
+                                                                  "constantValue": "2024-12-31"
+                                                                },
+                                                                "start": {
+                                                                  "constantValue": "2024-01-01"
+                                                                }
+                                                              }
+                                                            }
+                                                          },
+                                                          "rightField": {
+                                                            "valueReference": "3"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "filter": {
+                                                "valueReference": "4"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "key": {
+                                          "valueReference": "5"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "names": {
+                        "constantValue": [
+                          "NDVI_2024"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "image2": {
+                  "functionInvocationValue": {
+                    "functionName": "Image.rename",
+                    "arguments": {
+                      "input": {
+                        "functionInvocationValue": {
+                          "functionName": "Image.normalizedDifference",
+                          "arguments": {
+                            "bandNames": {
+                              "valueReference": "1"
+                            },
+                            "input": {
+                              "functionInvocationValue": {
+                                "functionName": "Collection.first",
+                                "arguments": {
+                                  "collection": {
+                                    "functionInvocationValue": {
+                                      "functionName": "Collection.limit",
+                                      "arguments": {
+                                        "collection": {
+                                          "functionInvocationValue": {
+                                            "functionName": "Collection.filter",
+                                            "arguments": {
+                                              "collection": {
+                                                "functionInvocationValue": {
+                                                  "functionName": "Collection.filter",
+                                                  "arguments": {
+                                                    "collection": {
+                                                      "valueReference": "2"
+                                                    },
+                                                    "filter": {
+                                                      "functionInvocationValue": {
+                                                        "functionName": "Filter.dateRangeContains",
+                                                        "arguments": {
+                                                          "leftValue": {
+                                                            "functionInvocationValue": {
+                                                              "functionName": "DateRange",
+                                                              "arguments": {
+                                                                "end": {
+                                                                  "constantValue": "2020-12-31"
+                                                                },
+                                                                "start": {
+                                                                  "constantValue": "2020-01-01"
+                                                                }
+                                                              }
+                                                            }
+                                                          },
+                                                          "rightField": {
+                                                            "valueReference": "3"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "filter": {
+                                                "valueReference": "4"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "key": {
+                                          "valueReference": "5"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "names": {
+                        "constantValue": [
+                          "NDVI_2020"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "names": {
+            "constantValue": [
+              "Delta_NDVI"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

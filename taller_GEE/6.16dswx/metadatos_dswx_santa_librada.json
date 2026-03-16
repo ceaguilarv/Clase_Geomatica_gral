@@ -1,0 +1,196 @@
+{
+    "type": "Image",
+    "bands": [
+        {
+            "id": "WTR_Water_classification",
+            "data_type": {
+                "type": "PixelType",
+                "precision": "int",
+                "min": 0,
+                "max": 255
+            },
+            "dimensions": [
+                3660,
+                3660
+            ],
+            "crs": "EPSG:32618",
+            "crs_transform": [
+                30,
+                0,
+                499980,
+                0,
+                -30,
+                500040
+            ]
+        },
+        {
+            "id": "BWTR_Binary_water",
+            "data_type": {
+                "type": "PixelType",
+                "precision": "int",
+                "min": 0,
+                "max": 255
+            },
+            "dimensions": [
+                3660,
+                3660
+            ],
+            "crs": "EPSG:32618",
+            "crs_transform": [
+                30,
+                0,
+                499980,
+                0,
+                -30,
+                500040
+            ]
+        },
+        {
+            "id": "CONF_Confidence",
+            "data_type": {
+                "type": "PixelType",
+                "precision": "int",
+                "min": 0,
+                "max": 255
+            },
+            "dimensions": [
+                3660,
+                3660
+            ],
+            "crs": "EPSG:32618",
+            "crs_transform": [
+                30,
+                0,
+                499980,
+                0,
+                -30,
+                500040
+            ]
+        },
+        {
+            "id": "DIAG_diagnostic",
+            "data_type": {
+                "type": "PixelType",
+                "precision": "int",
+                "min": 0,
+                "max": 255
+            },
+            "dimensions": [
+                3660,
+                3660
+            ],
+            "crs": "EPSG:32618",
+            "crs_transform": [
+                30,
+                0,
+                499980,
+                0,
+                -30,
+                500040
+            ]
+        }
+    ],
+    "version": 1763052821322669,
+    "id": "OPERA/DSWX/L3_V1/S1/T18NWK_20240830T104323Z_20251107T024246Z_S1A",
+    "properties": {
+        "DSWX_PRODUCT_VERSION": "1.0",
+        "SPACECRAFT_NAME": "Sentinel-1A/B",
+        "PROCESSING_DATETIME": "2025-11-07T02:43:11Z",
+        "RTC_PRODUCT_VERSION": "1.0",
+        "SPATIAL_COVERAGE": 99.847,
+        "system:time_end": 1725014603000,
+        "SENSOR": "IW",
+        "RTC_ORBIT_PASS_DIRECTION": "descending",
+        "system:time_start": 1725014603000,
+        "system:footprint": {
+            "type": "LinearRing",
+            "coordinates": [
+                [
+                    -75.00021391575173,
+                    3.530582414962665
+                ],
+                [
+                    -75.00018003663806,
+                    3.530580287564273
+                ],
+                [
+                    -74.01189103654205,
+                    3.5300530752909705
+                ],
+                [
+                    -74.01176631855525,
+                    3.5301626379107205
+                ],
+                [
+                    -74.01162877899881,
+                    3.5302557541743687
+                ],
+                [
+                    -74.01162026122641,
+                    3.5303000994456193
+                ],
+                [
+                    -74.01042158271274,
+                    4.523248038978056
+                ],
+                [
+                    -74.01053150746728,
+                    4.5233725591111416
+                ],
+                [
+                    -74.0106249344928,
+                    4.52350983835772
+                ],
+                [
+                    -74.01066940645819,
+                    4.5235183541817365
+                ],
+                [
+                    -75.00018030410477,
+                    4.524194404653813
+                ],
+                [
+                    -75.0003051218566,
+                    4.524084675402857
+                ],
+                [
+                    -75.00044259958284,
+                    4.523991449353434
+                ],
+                [
+                    -75.00044901877341,
+                    4.523958197101307
+                ],
+                [
+                    -75.00045106934812,
+                    4.523924471694705
+                ],
+                [
+                    -75.00045053441559,
+                    3.53085027764229
+                ],
+                [
+                    -75.00034060574268,
+                    3.5307259007534513
+                ],
+                [
+                    -75.00024717076954,
+                    3.5305887172554797
+                ],
+                [
+                    -75.00021391575173,
+                    3.530582414962665
+                ]
+            ]
+        },
+        "LAYOVER_SHADOW_COVERAGE": 3.534,
+        "POLARIZATION": "['VV', 'VH']",
+        "system:index": "T18NWK_20240830T104323Z_20251107T024246Z_S1A"
+    },
+    "uris": [
+        "gs://earth-engine-public-requester-pays/NASA/OPERA/opera_l3_dswx_s1_v1/2024-08-30/regen/OPERA_L3_DSWx-S1_T18NWK_20240830T104323Z_20251107T024246Z_S1A_30_v1.0_B01_WTR.tif",
+        "gs://earth-engine-public-requester-pays/NASA/OPERA/opera_l3_dswx_s1_v1/2024-08-30/regen/OPERA_L3_DSWx-S1_T18NWK_20240830T104323Z_20251107T024246Z_S1A_30_v1.0_B02_BWTR.tif",
+        "gs://earth-engine-public-requester-pays/NASA/OPERA/opera_l3_dswx_s1_v1/2024-08-30/regen/OPERA_L3_DSWx-S1_T18NWK_20240830T104323Z_20251107T024246Z_S1A_30_v1.0_B03_CONF.tif",
+        "gs://earth-engine-public-requester-pays/NASA/OPERA/opera_l3_dswx_s1_v1/2024-08-30/regen/OPERA_L3_DSWx-S1_T18NWK_20240830T104323Z_20251107T024246Z_S1A_30_v1.0_B04_DIAG.tif"
+    ]
+}

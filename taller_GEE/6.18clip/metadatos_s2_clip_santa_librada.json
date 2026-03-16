@@ -1,0 +1,15 @@
+{
+    "coleccion": "COPERNICUS/S2_SR_HARMONIZED",
+    "imagenes_usadas": 26,
+    "metodo_composite": "median",
+    "fecha_inicio": "2023-01-01",
+    "fecha_fin": "2023-12-31",
+    "filtro_nubosidad": "< 40%",
+    "buffer_busqueda_metros": 8000,
+    "buffer_clip_metros": 1200,
+    "area_centro": {
+        "latitud": 4.521001,
+        "longitud": -74.110149
+    },
+    "proceso": "Composite Sentinel-2 + clip local en Santa Librada"
+}

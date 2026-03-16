@@ -1,0 +1,12 @@
+{
+    "coleccion": "COPERNICUS/S2_SR_HARMONIZED",
+    "imagenes_usadas": 6,
+    "metodo_composite": "median",
+    "region_centro": {
+        "latitud": 4.521001,
+        "longitud": -74.110149
+    },
+    "fecha_inicio": "2023-01-01",
+    "fecha_fin": "2023-12-31",
+    "filtro_nubosidad": "< 15%"
+}
