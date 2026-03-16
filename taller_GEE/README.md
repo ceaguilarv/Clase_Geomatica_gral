@@ -212,38 +212,6 @@ La principal lección del trabajo fue que **no siempre es suficiente tomar la pr
 
 Este criterio fue clave para corregir los ejercicios de **querying/clipping** y **NDVI**.
 
-## Estructura recomendada del proyecto
-
-```text
-taller_GEE/
-├── seccion6.qmd
-├── README.md
-├── evidencias/
-│   ├── evid_6_1_entorno.png
-│   ├── evid_6_2_inicializacion_ok.png
-│   ├── evid_6_3_entornos_trabajo.png
-│   ├── ...
-│   └── evid_6_20_serie_temporal.png
-├── outputs/
-│   ├── *.json
-│   ├── *.html
-│   ├── *.png
-│   └── *.csv
-└── scripts/
-    ├── landsat_6_6.py
-    ├── sentinel2_6_9.py
-    ├── sentinel1_6_10.py
-    ├── modis_6_11.py
-    ├── srtm_6_12.py
-    ├── chirps_6_13.py
-    ├── buildings_6_14.py
-    ├── blackmarble_6_15.py
-    ├── dswx_6_16.py
-    ├── worldpop_6_17.py
-    ├── clip_6_18.py
-    ├── ndvi_6_19.py
-    └── serie_temporal_6_20.py
-```
 
 ## Conclusión general
 
