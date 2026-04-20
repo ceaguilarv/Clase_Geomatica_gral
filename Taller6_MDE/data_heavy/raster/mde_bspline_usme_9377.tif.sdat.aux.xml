@@ -1,3 +1,13 @@
 <PAMDataset>
-<SRS>PROJCRS["MAGNA-SIRGAS 2018 / Origen-Nacional",BASEGEODCRS["MAGNA-SIRGAS_2018",DATUM["Marco Geocentrico Nacional de Referencia 2018",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]],ID["EPSG",1329]],PRIMEM["Greenwich",0,ANGLEUNIT["Degree",0.0174532925199433]]],CONVERSION["unnamed",METHOD["Transverse Mercator",ID["EPSG",9807]],PARAMETER["Latitude of natural origin",4,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8801]],PARAMETER["Longitude of natural origin",-73,ANGLEUNIT["Degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["Scale factor at natural origin",0.9992,SCALEUNIT["unity",1],ID["EPSG",8805]],PARAMETER["False easting",5000000,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",2000000,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]</SRS>
+  <SRS dataAxisToSRSAxisMapping="1,2">PROJCS["MAGNA-SIRGAS 2018 / Origen-Nacional",GEOGCS["MAGNA-SIRGAS_2018",DATUM["Marco_Geocentrico_Nacional_de_Referencia_2018",SPHEROID["GRS 1980",6378137,298.257222101],AUTHORITY["EPSG","1329"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",4],PARAMETER["central_meridian",-73],PARAMETER["scale_factor",0.9992],PARAMETER["false_easting",5000000],PARAMETER["false_northing",2000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]</SRS>
+  <PAMRasterBand band="1">
+    <Metadata>
+      <MDI key="STATISTICS_APPROXIMATE">YES</MDI>
+      <MDI key="STATISTICS_MINIMUM">2666.8889160156</MDI>
+      <MDI key="STATISTICS_MAXIMUM">3774.9047851562</MDI>
+      <MDI key="STATISTICS_MEAN">3248.2190976913</MDI>
+      <MDI key="STATISTICS_STDDEV">283.94326527563</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
+  </PAMRasterBand>
 </PAMDataset>
