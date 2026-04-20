@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Carlos Aguilar">
+<meta name="author" content="Luis Gálvez">
+
+<title>Análisis multitemporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme (Bogotá) mediante Google Earth Engine y Python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="proyecto_geomatica_gral_files/libs/clipboard/clipboard.min.js"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/popper.min.js"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="proyecto_geomatica_gral_files/libs/quarto-html/anchor.min.js"></script>
+<link href="proyecto_geomatica_gral_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="proyecto_geomatica_gral_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="proyecto_geomatica_gral_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="proyecto_geomatica_gral_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="proyecto_geomatica_gral_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link active" data-scroll-target="#resumen"><span class="header-section-number">1</span> Resumen</a></li>
+  <li><a href="#introducción-y-justificación" id="toc-introducción-y-justificación" class="nav-link" data-scroll-target="#introducción-y-justificación"><span class="header-section-number">2</span> Introducción y justificación</a></li>
+  <li><a href="#planteamiento-del-problema" id="toc-planteamiento-del-problema" class="nav-link" data-scroll-target="#planteamiento-del-problema"><span class="header-section-number">3</span> Planteamiento del problema</a></li>
+  <li><a href="#pregunta-de-investigación" id="toc-pregunta-de-investigación" class="nav-link" data-scroll-target="#pregunta-de-investigación"><span class="header-section-number">4</span> Pregunta de investigación</a></li>
+  <li><a href="#hipótesis-de-trabajo" id="toc-hipótesis-de-trabajo" class="nav-link" data-scroll-target="#hipótesis-de-trabajo"><span class="header-section-number">5</span> Hipótesis de trabajo</a></li>
+  <li><a href="#objetivos" id="toc-objetivos" class="nav-link" data-scroll-target="#objetivos"><span class="header-section-number">6</span> Objetivos</a>
+  <ul class="collapse">
+  <li><a href="#objetivo-general" id="toc-objetivo-general" class="nav-link" data-scroll-target="#objetivo-general"><span class="header-section-number">6.1</span> Objetivo general</a></li>
+  <li><a href="#objetivos-específicos" id="toc-objetivos-específicos" class="nav-link" data-scroll-target="#objetivos-específicos"><span class="header-section-number">6.2</span> Objetivos específicos</a></li>
+  </ul></li>
+  <li><a href="#área-de-estudio" id="toc-área-de-estudio" class="nav-link" data-scroll-target="#área-de-estudio"><span class="header-section-number">7</span> Área de estudio</a></li>
+  <li><a href="#fuentes-de-datos" id="toc-fuentes-de-datos" class="nav-link" data-scroll-target="#fuentes-de-datos"><span class="header-section-number">8</span> Fuentes de datos</a>
+  <ul class="collapse">
+  <li><a href="#imágenes-satelitales" id="toc-imágenes-satelitales" class="nav-link" data-scroll-target="#imágenes-satelitales"><span class="header-section-number">8.1</span> Imágenes satelitales</a></li>
+  <li><a href="#información-vectorial-y-cartografía-base" id="toc-información-vectorial-y-cartografía-base" class="nav-link" data-scroll-target="#información-vectorial-y-cartografía-base"><span class="header-section-number">8.2</span> Información vectorial y cartografía base</a></li>
+  <li><a href="#variables-derivadas" id="toc-variables-derivadas" class="nav-link" data-scroll-target="#variables-derivadas"><span class="header-section-number">8.3</span> Variables derivadas</a></li>
+  </ul></li>
+  <li><a href="#marco-metodológico-propuesto" id="toc-marco-metodológico-propuesto" class="nav-link" data-scroll-target="#marco-metodológico-propuesto"><span class="header-section-number">9</span> Marco metodológico propuesto</a>
+  <ul class="collapse">
+  <li><a href="#enfoque-general" id="toc-enfoque-general" class="nav-link" data-scroll-target="#enfoque-general"><span class="header-section-number">9.1</span> Enfoque general</a></li>
+  <li><a href="#delimitación-del-área-de-interés" id="toc-delimitación-del-área-de-interés" class="nav-link" data-scroll-target="#delimitación-del-área-de-interés"><span class="header-section-number">9.2</span> Delimitación del área de interés</a></li>
+  <li><a href="#construcción-de-la-serie-temporal" id="toc-construcción-de-la-serie-temporal" class="nav-link" data-scroll-target="#construcción-de-la-serie-temporal"><span class="header-section-number">9.3</span> Construcción de la serie temporal</a></li>
+  <li><a href="#preprocesamiento" id="toc-preprocesamiento" class="nav-link" data-scroll-target="#preprocesamiento"><span class="header-section-number">9.4</span> Preprocesamiento</a></li>
+  <li><a href="#generación-de-variables-espectrales" id="toc-generación-de-variables-espectrales" class="nav-link" data-scroll-target="#generación-de-variables-espectrales"><span class="header-section-number">9.5</span> Generación de variables espectrales</a></li>
+  <li><a href="#definición-de-clases-temáticas" id="toc-definición-de-clases-temáticas" class="nav-link" data-scroll-target="#definición-de-clases-temáticas"><span class="header-section-number">9.6</span> Definición de clases temáticas</a></li>
+  <li><a href="#muestras-de-entrenamiento" id="toc-muestras-de-entrenamiento" class="nav-link" data-scroll-target="#muestras-de-entrenamiento"><span class="header-section-number">9.7</span> Muestras de entrenamiento</a></li>
+  <li><a href="#clasificación-supervisada" id="toc-clasificación-supervisada" class="nav-link" data-scroll-target="#clasificación-supervisada"><span class="header-section-number">9.8</span> Clasificación supervisada</a></li>
+  <li><a href="#detección-de-cambios" id="toc-detección-de-cambios" class="nav-link" data-scroll-target="#detección-de-cambios"><span class="header-section-number">9.9</span> Detección de cambios</a></li>
+  <li><a href="#validación" id="toc-validación" class="nav-link" data-scroll-target="#validación"><span class="header-section-number">9.10</span> Validación</a></li>
+  <li><a href="#entorno-tecnológico" id="toc-entorno-tecnológico" class="nav-link" data-scroll-target="#entorno-tecnológico"><span class="header-section-number">9.11</span> Entorno tecnológico</a></li>
+  </ul></li>
+  <li><a href="#justificación-del-uso-de-clasificación-supervisada-y-aprendizaje-automático" id="toc-justificación-del-uso-de-clasificación-supervisada-y-aprendizaje-automático" class="nav-link" data-scroll-target="#justificación-del-uso-de-clasificación-supervisada-y-aprendizaje-automático"><span class="header-section-number">10</span> Justificación del uso de clasificación supervisada y aprendizaje automático</a></li>
+  <li><a href="#resultados-esperados" id="toc-resultados-esperados" class="nav-link" data-scroll-target="#resultados-esperados"><span class="header-section-number">11</span> Resultados esperados</a></li>
+  <li><a href="#alcances-y-limitaciones-previstas" id="toc-alcances-y-limitaciones-previstas" class="nav-link" data-scroll-target="#alcances-y-limitaciones-previstas"><span class="header-section-number">12</span> Alcances y limitaciones previstas</a></li>
+  <li><a href="#cronograma-preliminar" id="toc-cronograma-preliminar" class="nav-link" data-scroll-target="#cronograma-preliminar"><span class="header-section-number">13</span> Cronograma preliminar</a></li>
+  <li><a href="#productos-esperados" id="toc-productos-esperados" class="nav-link" data-scroll-target="#productos-esperados"><span class="header-section-number">14</span> Productos esperados</a></li>
+  <li><a href="#estrategia-de-reproducibilidad-y-apertura" id="toc-estrategia-de-reproducibilidad-y-apertura" class="nav-link" data-scroll-target="#estrategia-de-reproducibilidad-y-apertura"><span class="header-section-number">15</span> Estrategia de reproducibilidad y apertura</a></li>
+  <li><a href="#estructura-preliminar-del-documento-final" id="toc-estructura-preliminar-del-documento-final" class="nav-link" data-scroll-target="#estructura-preliminar-del-documento-final"><span class="header-section-number">16</span> Estructura preliminar del documento final</a></li>
+  <li><a href="#referencias-preliminares" id="toc-referencias-preliminares" class="nav-link" data-scroll-target="#referencias-preliminares"><span class="header-section-number">17</span> Referencias preliminares</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="proyecto_geomatica_gral.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis multitemporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme (Bogotá) mediante Google Earth Engine y Python</h1>
+<p class="subtitle lead">Propuesta de proyecto final</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores/as</div>
+    <div class="quarto-title-meta-contents">
+             <p>Carlos Aguilar </p>
+             <p>Luis Gálvez </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="resumen" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Resumen</h1>
+<p>La presente propuesta plantea el desarrollo de un análisis multitemporal orientado a identificar y cuantificar la expansión de áreas asociadas a la extracción de arcilla y actividad ladrillera en la localidad de Usme, Bogotá, durante el periodo 1990–2024. El estudio se fundamenta en el uso de imágenes satelitales Landsat, complementadas con información auxiliar de referencia, con el fin de caracterizar la evolución espacial del fenómeno a lo largo de más de tres décadas.</p>
+<p>La metodología propuesta integrará Google Earth Engine como plataforma principal para el procesamiento de imágenes, y Python como lenguaje de automatización y apoyo analítico en un entorno reproducible desarrollado mediante contenedores Docker y Visual Studio Code. Como estrategia de análisis se plantea una clasificación supervisada basada en el algoritmo Random Forest, acompañada de técnicas de detección de cambios y validación temática. Con ello se espera generar cartografía multitemporal, estadísticas de área y una lectura territorial de la dinámica extractiva en Usme, en coherencia con los principios de apertura y reproducibilidad propios de la geomática contemporánea.</p>
+</section>
+<section id="introducción-y-justificación" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introducción y justificación</h1>
+<p>La localidad de Usme, ubicada en el suroriente de Bogotá D.C., ha sido escenario de procesos históricos de extracción de arcilla asociados a la producción de materiales para la construcción, especialmente ladrillo. Estas actividades han dejado una huella territorial visible en el paisaje, expresada en la modificación de coberturas, generación de superficies expuestas, transformación de laderas y consolidación de espacios productivos vinculados a la industria ladrillera. En sectores periurbanos, estos cambios adquieren particular relevancia debido a la coexistencia entre expansión urbana, presión sobre áreas rurales y persistencia de actividades extractivas.</p>
+<p>Desde la geomática, la observación de este tipo de transformaciones resulta especialmente pertinente porque las imágenes satelitales permiten analizar cambios espaciales de manera sistemática y con perspectiva histórica. En este contexto, el uso de series temporales de sensores remotos constituye una herramienta adecuada para reconstruir trayectorias de cambio, estimar superficies afectadas e identificar patrones espaciales de expansión o permanencia. La disponibilidad de archivos históricos como Landsat permite abordar escalas temporales de más de treinta años, lo cual ofrece una base sólida para estudiar la evolución del fenómeno en Usme.</p>
+<p>La pertinencia del proyecto también radica en su valor metodológico. El uso combinado de Google Earth Engine y Python posibilita implementar un flujo de trabajo reproducible, escalable y compatible con enfoques actuales de ciencia abierta. A su vez, la incorporación de una clasificación supervisada mediante Random Forest permite integrar un componente de aprendizaje automático que fortalece la capacidad de discriminación entre clases de cobertura con comportamientos espectrales similares, como ocurre con áreas mineras, suelos desnudos y superficies intervenidas.</p>
+<p>En términos académicos, el proyecto resulta coherente con los objetivos de una asignatura de geomática general a nivel de maestría, ya que articula teledetección, análisis espacial, procesamiento en la nube, cartografía temática y programación. En términos territoriales, el estudio busca aportar evidencia cartográfica y cuantitativa sobre la dinámica de transformación de una localidad de Bogotá donde la actividad extractiva ha tenido una incidencia histórica significativa.</p>
+</section>
+<section id="planteamiento-del-problema" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Planteamiento del problema</h1>
+<p>La expansión de áreas asociadas a extracción de arcilla en la localidad de Usme ha generado transformaciones territoriales acumulativas que no han sido analizadas de manera sistemática desde una perspectiva multitemporal de largo plazo dentro del marco de este curso. Aunque la presencia de ladrilleras y frentes extractivos es reconocida en distintos sectores de la localidad, persiste la necesidad de documentar cómo han cambiado espacialmente estas superficies, en qué periodos se han expandido con mayor intensidad y qué patrones territoriales pueden identificarse a partir del análisis satelital.</p>
+<p>La ausencia de una caracterización espacio-temporal precisa limita la comprensión del fenómeno y reduce la posibilidad de discutirlo con base en evidencia cartográfica cuantificable. En consecuencia, surge la necesidad de diseñar una metodología que permita detectar, clasificar y comparar la evolución de las áreas asociadas a extracción de arcilla mediante una serie temporal de imágenes satelitales, integrando herramientas de procesamiento geoespacial y aprendizaje automático.</p>
+</section>
+<section id="pregunta-de-investigación" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Pregunta de investigación</h1>
+<p>¿Cómo ha cambiado espacial y temporalmente la extensión de las áreas asociadas a la extracción de arcilla y actividad ladrillera en la localidad de Usme durante el periodo 1990–2024?</p>
+</section>
+<section id="hipótesis-de-trabajo" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Hipótesis de trabajo</h1>
+<p>Las áreas asociadas a extracción de arcilla en la localidad de Usme han presentado una expansión espacial significativa durante las últimas tres décadas, la cual puede ser identificada y cuantificada mediante clasificación supervisada de imágenes satelitales multitemporales procesadas en Google Earth Engine con apoyo de Python.</p>
+</section>
+<section id="objetivos" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Objetivos</h1>
+<section id="objetivo-general" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="objetivo-general"><span class="header-section-number">6.1</span> Objetivo general</h2>
+<p>Analizar la dinámica espacio-temporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme, Bogotá, durante el periodo 1990–2024, mediante imágenes satelitales multitemporales procesadas en Google Earth Engine con apoyo de Python.</p>
+</section>
+<section id="objetivos-específicos" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="objetivos-específicos"><span class="header-section-number">6.2</span> Objetivos específicos</h2>
+<ol type="1">
+<li><p>Delimitar el área de estudio e identificar los principales sectores con presencia histórica de actividad extractiva y ladrillera en la localidad de Usme.</p></li>
+<li><p>Construir una serie temporal de imágenes Landsat y derivar variables espectrales útiles para diferenciar áreas mineras, vegetación, zonas urbanas y suelos desnudos.</p></li>
+<li><p>Aplicar una clasificación supervisada basada en Random Forest para detectar cambios y cuantificar la expansión espacial de las áreas asociadas a extracción de arcilla durante el periodo de estudio.</p></li>
+</ol>
+</section>
+</section>
+<section id="área-de-estudio" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Área de estudio</h1>
+<p>El área de estudio corresponde a la localidad de Usme, una de las veinte localidades de Bogotá D.C., localizada en el sector suroriental del Distrito Capital. Su configuración territorial incluye zonas urbanas, periurbanas y rurales, lo cual la convierte en un espacio especialmente adecuado para observar interacciones entre procesos de urbanización, actividades productivas y cambios de cobertura del suelo.</p>
+<p>La elección de Usme se sustenta en la presencia histórica de explotación de arcilla y actividad ladrillera, visibles en diversos sectores del territorio. Aunque inicialmente se había considerado el barrio Santa Librada como unidad de análisis puntual, la propuesta se amplía a escala de localidad para obtener una visión más integral del fenómeno y reconocer múltiples focos de transformación asociados a la actividad extractiva.</p>
+<p>En la fase de desarrollo del proyecto se elaborará un mapa base del área de estudio que incluirá el límite administrativo de la localidad, vías principales, drenajes relevantes y la localización preliminar de sectores con evidencia de actividad minera o ladrillera.</p>
+</section>
+<section id="fuentes-de-datos" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Fuentes de datos</h1>
+<p>El estudio se apoyará en fuentes de información raster y vectorial de acceso abierto, organizadas en una estrategia de análisis reproducible.</p>
+<section id="imágenes-satelitales" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="imágenes-satelitales"><span class="header-section-number">8.1</span> Imágenes satelitales</h2>
+<p>La fuente principal será la serie Landsat, integrada por los sensores Landsat 5 TM, Landsat 7 ETM+, Landsat 8 OLI/TIRS y Landsat 9 OLI-2. Estas imágenes serán empleadas por su continuidad temporal, cobertura histórica y adecuación para análisis multitemporales de largo plazo. El periodo preliminar propuesto para el análisis abarca desde 1990 hasta 2024.</p>
+<p>Como apoyo para el periodo reciente se considerará el uso de Sentinel-2, especialmente en tareas de validación visual y contraste espacial, debido a su mejor resolución espacial en comparación con Landsat.</p>
+</section>
+<section id="información-vectorial-y-cartografía-base" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="información-vectorial-y-cartografía-base"><span class="header-section-number">8.2</span> Información vectorial y cartografía base</h2>
+<p>Se utilizarán límites administrativos de Bogotá y de la localidad de Usme, además de capas vectoriales complementarias como red vial, hidrografía y, de ser pertinente, coberturas temáticas de apoyo provenientes de geoportales oficiales y repositorios de datos abiertos.</p>
+</section>
+<section id="variables-derivadas" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="variables-derivadas"><span class="header-section-number">8.3</span> Variables derivadas</h2>
+<p>A partir de las imágenes satelitales se generarán índices espectrales orientados a fortalecer la separación temática entre clases de cobertura. Entre ellos se prevé el uso de NDVI, NDBI y BSI, por su utilidad en la discriminación de vegetación, áreas construidas y suelos expuestos.</p>
+</section>
+</section>
+<section id="marco-metodológico-propuesto" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Marco metodológico propuesto</h1>
+<section id="enfoque-general" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="enfoque-general"><span class="header-section-number">9.1</span> Enfoque general</h2>
+<p>La propuesta se desarrollará bajo un enfoque de análisis multitemporal de cobertura del suelo basado en sensores remotos, clasificación supervisada y detección de cambios. La lógica del procedimiento consistirá en construir compuestos temporales representativos, entrenar un modelo de clasificación para distinguir coberturas de interés y comparar los resultados entre distintos cortes temporales con el fin de cuantificar la expansión de áreas asociadas a extracción de arcilla.</p>
+</section>
+<section id="delimitación-del-área-de-interés" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="delimitación-del-área-de-interés"><span class="header-section-number">9.2</span> Delimitación del área de interés</h2>
+<p>En una primera etapa se definirá el límite espacial de la localidad de Usme como área principal de procesamiento. Sobre esta unidad se identificarán, mediante revisión preliminar de imágenes y cartografía de apoyo, sectores con evidencia histórica de actividad extractiva y ladrillera. Esta delimitación permitirá focalizar el análisis sin perder el contexto territorial completo de la localidad.</p>
+</section>
+<section id="construcción-de-la-serie-temporal" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="construcción-de-la-serie-temporal"><span class="header-section-number">9.3</span> Construcción de la serie temporal</h2>
+<p>Se seleccionarán imágenes Landsat correspondientes al periodo 1990–2024, priorizando escenas con baja nubosidad y condiciones comparables entre fechas. Para reducir la influencia de observaciones aisladas y mejorar la estabilidad de la señal espectral, se construirán compuestos temporales por años clave o por ventanas multianuales. De manera preliminar, se considera trabajar con cortes temporales como 1990, 1995, 2000, 2005, 2010, 2015, 2020 y 2024, aunque esta selección podrá ajustarse según disponibilidad y calidad de los datos.</p>
+</section>
+<section id="preprocesamiento" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="preprocesamiento"><span class="header-section-number">9.4</span> Preprocesamiento</h2>
+<p>Las imágenes serán sometidas a un proceso de filtrado y limpieza que incluirá enmascaramiento de nubes, selección de reflectancia de superficie y recorte al área de estudio. Asimismo, se procurará mantener consistencia temporal y estacional entre los cortes analizados para minimizar efectos derivados de la variabilidad intraanual.</p>
+</section>
+<section id="generación-de-variables-espectrales" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="generación-de-variables-espectrales"><span class="header-section-number">9.5</span> Generación de variables espectrales</h2>
+<p>Además de las bandas espectrales originales, se calcularán índices que apoyen la identificación de coberturas específicas. Entre las variables previstas se incluyen:</p>
+<ul>
+<li>Índice de vegetación de diferencia normalizada (NDVI), para reforzar la detección de coberturas vegetales.</li>
+<li>Índice de áreas construidas de diferencia normalizada (NDBI), para mejorar la separación de superficies urbanas o construidas.</li>
+<li>Índice de suelo desnudo (BSI), para apoyar la discriminación de suelos expuestos y áreas intervenidas.</li>
+</ul>
+<p>La combinación de bandas e índices permitirá construir un conjunto de variables predictoras más robusto para la clasificación.</p>
+</section>
+<section id="definición-de-clases-temáticas" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="definición-de-clases-temáticas"><span class="header-section-number">9.6</span> Definición de clases temáticas</h2>
+<p>Se propone trabajar inicialmente con cuatro clases principales:</p>
+<ol type="1">
+<li>Áreas asociadas a extracción de arcilla.</li>
+<li>Vegetación.</li>
+<li>Zona urbana o construida.</li>
+<li>Suelo desnudo.</li>
+</ol>
+<p>Esta estructura temática se considera adecuada para representar el fenómeno de interés y, al mismo tiempo, controlar posibles confusiones espectrales entre superficies mineras y otros suelos expuestos.</p>
+</section>
+<section id="muestras-de-entrenamiento" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="muestras-de-entrenamiento"><span class="header-section-number">9.7</span> Muestras de entrenamiento</h2>
+<p>La clasificación supervisada requerirá la construcción de muestras de entrenamiento representativas para cada clase. Estas muestras se obtendrán mediante fotointerpretación de imágenes satelitales, apoyadas en cartografía base y observación visual del territorio. Se buscará una distribución espacial adecuada de las muestras dentro del área de estudio y un equilibrio razonable entre clases.</p>
+</section>
+<section id="clasificación-supervisada" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="clasificación-supervisada"><span class="header-section-number">9.8</span> Clasificación supervisada</h2>
+<p>La propuesta contempla el uso del algoritmo Random Forest como método de clasificación supervisada. Este algoritmo se selecciona por su estabilidad, capacidad de generalización y buen desempeño en estudios de coberturas terrestres. Su aplicación permitirá incorporar un componente de aprendizaje automático al proyecto sin comprometer su viabilidad técnica dentro del tiempo disponible para la asignatura.</p>
+</section>
+<section id="detección-de-cambios" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="detección-de-cambios"><span class="header-section-number">9.9</span> Detección de cambios</h2>
+<p>Una vez obtenidos los mapas clasificados para los distintos cortes temporales, se realizará un análisis comparativo enfocado en la clase asociada a extracción de arcilla. Se calcularán cambios absolutos y relativos de superficie, y se buscará identificar patrones espaciales de expansión, persistencia o reconfiguración de las áreas extractivas en la localidad.</p>
+</section>
+<section id="validación" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="validación"><span class="header-section-number">9.10</span> Validación</h2>
+<p>El desempeño del modelo se evaluará mediante una matriz de confusión y métricas derivadas, como exactitud global y precisión por clase. La validación permitirá valorar la confiabilidad del producto temático y sustentar la interpretación de los cambios observados.</p>
+</section>
+<section id="entorno-tecnológico" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="entorno-tecnológico"><span class="header-section-number">9.11</span> Entorno tecnológico</h2>
+<p>El desarrollo se realizará mediante Google Earth Engine y Python, articulados dentro de un entorno reproducible en Docker y Visual Studio Code. Esta elección permitirá organizar el código, documentar las rutinas de procesamiento y facilitar la trazabilidad del análisis.</p>
+</section>
+</section>
+<section id="justificación-del-uso-de-clasificación-supervisada-y-aprendizaje-automático" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Justificación del uso de clasificación supervisada y aprendizaje automático</h1>
+<p>La clasificación supervisada se considera la estrategia más adecuada para el presente proyecto porque el fenómeno de interés está claramente definido y se dispone de criterios interpretativos para identificar ejemplos de las clases temáticas. A diferencia de la clasificación no supervisada, en la cual el algoritmo agrupa píxeles según similitud sin conocimiento previo de las categorías finales, la clasificación supervisada permite orientar el proceso con base en muestras previamente etiquetadas, lo que incrementa el control sobre la interpretación temática y mejora la correspondencia entre el resultado cartográfico y el objetivo del estudio.</p>
+<p>Dentro de este enfoque, el uso de Random Forest introduce un componente de aprendizaje automático que resulta pertinente por su capacidad para manejar relaciones complejas entre variables espectrales y clases de cobertura. En contextos donde existen similitudes entre áreas mineras, suelos desnudos y superficies intervenidas, este algoritmo ofrece ventajas significativas frente a métodos más simples, ya que combina múltiples árboles de decisión y reduce la sensibilidad al ruido o a errores aislados en los datos de entrenamiento.</p>
+</section>
+<section id="resultados-esperados" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Resultados esperados</h1>
+<p>Se espera que el proyecto produzca los siguientes resultados:</p>
+<ol type="1">
+<li><p>Un mapa base del área de estudio con localización de la localidad de Usme y sectores de interés asociados a actividad extractiva.</p></li>
+<li><p>Una serie de mapas clasificados para distintos cortes temporales del periodo 1990–2024.</p></li>
+<li><p>Un mapa de cambio que permita visualizar la expansión espacial de áreas asociadas a extracción de arcilla.</p></li>
+<li><p>Una tabla de superficies por periodo para la clase de interés, expresada en hectáreas.</p></li>
+<li><p>Un análisis gráfico de la evolución temporal del área clasificada como extracción de arcilla.</p></li>
+<li><p>Una evaluación temática de la clasificación basada en indicadores de precisión.</p></li>
+<li><p>Una discusión territorial sobre la dinámica espacial del fenómeno y las posibilidades de aplicación del enfoque geomático propuesto.</p></li>
+</ol>
+</section>
+<section id="alcances-y-limitaciones-previstas" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Alcances y limitaciones previstas</h1>
+<p>El principal alcance del proyecto consiste en generar una lectura espacio-temporal de largo plazo sobre la expansión de áreas asociadas a extracción de arcilla en Usme mediante una metodología reproducible y apoyada en sensores remotos. Se trata de una propuesta viable para el marco académico de la asignatura y con capacidad para producir evidencia cartográfica relevante.</p>
+<p>Entre las limitaciones previstas se reconoce la resolución espacial de Landsat, que puede dificultar la identificación precisa de superficies pequeñas o altamente fragmentadas. Asimismo, se anticipa cierta complejidad en la separación entre áreas mineras y otros suelos desnudos, razón por la cual será necesario fortalecer la selección de muestras, el uso de índices espectrales y la validación de resultados.</p>
+</section>
+<section id="cronograma-preliminar" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Cronograma preliminar</h1>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fase</th>
+<th>Actividad</th>
+<th>Semanas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Delimitación del área de estudio y recopilación de insumos</td>
+<td>1–2</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Descarga, exploración y organización de imágenes satelitales</td>
+<td>2–3</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Preprocesamiento y generación de compuestos temporales</td>
+<td>3–5</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Construcción de muestras de entrenamiento</td>
+<td>5–6</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Clasificación supervisada con Random Forest</td>
+<td>6–8</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Detección de cambios y cálculo de superficies</td>
+<td>8–9</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Validación de resultados y ajustes metodológicos</td>
+<td>9–10</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Redacción del informe final y organización del repositorio</td>
+<td>10–12</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="productos-esperados" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Productos esperados</h1>
+<p>Los productos del proyecto serán:</p>
+<ul>
+<li>Documento final en formato Quarto.</li>
+<li>Repositorio de código en GitHub con scripts y descripción metodológica.</li>
+<li>Mapas temáticos en formato digital.</li>
+<li>Tablas y gráficos de cambio temporal.</li>
+<li>Síntesis interpretativa del fenómeno espacial analizado.</li>
+</ul>
+</section>
+<section id="estrategia-de-reproducibilidad-y-apertura" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Estrategia de reproducibilidad y apertura</h1>
+<p>La propuesta adopta un enfoque de reproducibilidad mediante el uso de herramientas abiertas y flujos de trabajo documentados. El procesamiento de datos se realizará en Google Earth Engine desde Python, mientras que el entorno computacional se organizará en Docker para controlar dependencias y asegurar portabilidad. El desarrollo se gestionará en Visual Studio Code y el producto final se estructurará en Quarto. De manera complementaria, se prevé publicar los scripts en un repositorio de GitHub con su respectiva documentación.</p>
+</section>
+<section id="estructura-preliminar-del-documento-final" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Estructura preliminar del documento final</h1>
+<p>El documento final del proyecto se organizará de la siguiente manera:</p>
+<ol type="1">
+<li>Introducción y justificación.</li>
+<li>Objetivos.</li>
+<li>Área de estudio.</li>
+<li>Fuentes de datos.</li>
+<li>Metodología.</li>
+<li>Resultados.</li>
+<li>Discusión.</li>
+<li>Conclusiones.</li>
+<li>Referencias.</li>
+<li>Repositorio y anexos.</li>
+</ol>
+</section>
+<section id="referencias-preliminares" class="level1" data-number="17">
+<h1 data-number="17"><span class="header-section-number">17</span> Referencias preliminares</h1>
+<p>Breiman, L. (2001). Random forests. <em>Machine Learning, 45</em>(1), 5–32. https://doi.org/10.1023/A:1010933404324</p>
+<p>Gorelick, N., Hancher, M., Dixon, M., Ilyushchenko, S., Thau, D., &amp; Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. <em>Remote Sensing of Environment, 202</em>, 18–27. https://doi.org/10.1016/j.rse.2017.06.031</p>
+<p>Lillesand, T., Kiefer, R. W., &amp; Chipman, J. (2015). <em>Remote sensing and image interpretation</em> (7th ed.). Wiley.</p>
+<p>Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., &amp; Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. <em>Remote Sensing of Environment, 148</em>, 42–57. https://doi.org/10.1016/j.rse.2014.02.015</p>
+<p>Wulder, M. A., Masek, J. G., Cohen, W. B., Loveland, T. R., &amp; Woodcock, C. E. (2012). Opening the archive: How free data has enabled the science and monitoring promise of Landsat. <em>Remote Sensing of Environment, 122</em>, 2–10. https://doi.org/10.1016/j.rse.2012.01.010</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

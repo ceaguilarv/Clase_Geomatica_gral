@@ -1,0 +1,237 @@
+---
+title: "Análisis multitemporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme (Bogotá) mediante Google Earth Engine y Python"
+subtitle: "Propuesta de proyecto final"
+author:
+  - "Carlos Aguilar"
+  - "Luis Gálvez"
+lang: es
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: simple
+  pdf:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    documentclass: article
+execute:
+  echo: false
+  warning: false
+  message: false
+jupyter: python3
+---
+
+# Resumen
+
+La presente propuesta plantea el desarrollo de un análisis multitemporal orientado a identificar y cuantificar la expansión de áreas asociadas a la extracción de arcilla y actividad ladrillera en la localidad de Usme, Bogotá, durante el periodo 1990--2024. El estudio se fundamenta en el uso de imágenes satelitales Landsat, complementadas con información auxiliar de referencia, con el fin de caracterizar la evolución espacial del fenómeno a lo largo de más de tres décadas.
+
+La metodología propuesta integrará Google Earth Engine como plataforma principal para el procesamiento de imágenes, y Python como lenguaje de automatización y apoyo analítico en un entorno reproducible desarrollado mediante contenedores Docker y Visual Studio Code. Como estrategia de análisis se plantea una clasificación supervisada basada en el algoritmo Random Forest, acompañada de técnicas de detección de cambios y validación temática. Con ello se espera generar cartografía multitemporal, estadísticas de área y una lectura territorial de la dinámica extractiva en Usme, en coherencia con los principios de apertura y reproducibilidad propios de la geomática contemporánea.
+
+# Introducción y justificación
+
+La localidad de Usme, ubicada en el suroriente de Bogotá D.C., ha sido escenario de procesos históricos de extracción de arcilla asociados a la producción de materiales para la construcción, especialmente ladrillo. Estas actividades han dejado una huella territorial visible en el paisaje, expresada en la modificación de coberturas, generación de superficies expuestas, transformación de laderas y consolidación de espacios productivos vinculados a la industria ladrillera. En sectores periurbanos, estos cambios adquieren particular relevancia debido a la coexistencia entre expansión urbana, presión sobre áreas rurales y persistencia de actividades extractivas.
+
+Desde la geomática, la observación de este tipo de transformaciones resulta especialmente pertinente porque las imágenes satelitales permiten analizar cambios espaciales de manera sistemática y con perspectiva histórica. En este contexto, el uso de series temporales de sensores remotos constituye una herramienta adecuada para reconstruir trayectorias de cambio, estimar superficies afectadas e identificar patrones espaciales de expansión o permanencia. La disponibilidad de archivos históricos como Landsat permite abordar escalas temporales de más de treinta años, lo cual ofrece una base sólida para estudiar la evolución del fenómeno en Usme.
+
+La pertinencia del proyecto también radica en su valor metodológico. El uso combinado de Google Earth Engine y Python posibilita implementar un flujo de trabajo reproducible, escalable y compatible con enfoques actuales de ciencia abierta. A su vez, la incorporación de una clasificación supervisada mediante Random Forest permite integrar un componente de aprendizaje automático que fortalece la capacidad de discriminación entre clases de cobertura con comportamientos espectrales similares, como ocurre con áreas mineras, suelos desnudos y superficies intervenidas.
+
+En términos académicos, el proyecto resulta coherente con los objetivos de una asignatura de geomática general a nivel de maestría, ya que articula teledetección, análisis espacial, procesamiento en la nube, cartografía temática y programación. En términos territoriales, el estudio busca aportar evidencia cartográfica y cuantitativa sobre la dinámica de transformación de una localidad de Bogotá donde la actividad extractiva ha tenido una incidencia histórica significativa.
+
+# Planteamiento del problema
+
+La expansión de áreas asociadas a extracción de arcilla en la localidad de Usme ha generado transformaciones territoriales acumulativas que no han sido analizadas de manera sistemática desde una perspectiva multitemporal de largo plazo dentro del marco de este curso. Aunque la presencia de ladrilleras y frentes extractivos es reconocida en distintos sectores de la localidad, persiste la necesidad de documentar cómo han cambiado espacialmente estas superficies, en qué periodos se han expandido con mayor intensidad y qué patrones territoriales pueden identificarse a partir del análisis satelital.
+
+La ausencia de una caracterización espacio-temporal precisa limita la comprensión del fenómeno y reduce la posibilidad de discutirlo con base en evidencia cartográfica cuantificable. En consecuencia, surge la necesidad de diseñar una metodología que permita detectar, clasificar y comparar la evolución de las áreas asociadas a extracción de arcilla mediante una serie temporal de imágenes satelitales, integrando herramientas de procesamiento geoespacial y aprendizaje automático.
+
+# Pregunta de investigación
+
+¿Cómo ha cambiado espacial y temporalmente la extensión de las áreas asociadas a la extracción de arcilla y actividad ladrillera en la localidad de Usme durante el periodo 1990--2024?
+
+# Hipótesis de trabajo
+
+Las áreas asociadas a extracción de arcilla en la localidad de Usme han presentado una expansión espacial significativa durante las últimas tres décadas, la cual puede ser identificada y cuantificada mediante clasificación supervisada de imágenes satelitales multitemporales procesadas en Google Earth Engine con apoyo de Python.
+
+# Objetivos
+
+## Objetivo general
+
+Analizar la dinámica espacio-temporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme, Bogotá, durante el periodo 1990--2024, mediante imágenes satelitales multitemporales procesadas en Google Earth Engine con apoyo de Python.
+
+## Objetivos específicos
+
+1. Delimitar el área de estudio e identificar los principales sectores con presencia histórica de actividad extractiva y ladrillera en la localidad de Usme.
+
+2. Construir una serie temporal de imágenes Landsat y derivar variables espectrales útiles para diferenciar áreas mineras, vegetación, zonas urbanas y suelos desnudos.
+
+3. Aplicar una clasificación supervisada basada en Random Forest para detectar cambios y cuantificar la expansión espacial de las áreas asociadas a extracción de arcilla durante el periodo de estudio.
+
+# Área de estudio
+
+El área de estudio corresponde a la localidad de Usme, una de las veinte localidades de Bogotá D.C., localizada en el sector suroriental del Distrito Capital. Su configuración territorial incluye zonas urbanas, periurbanas y rurales, lo cual la convierte en un espacio especialmente adecuado para observar interacciones entre procesos de urbanización, actividades productivas y cambios de cobertura del suelo.
+
+La elección de Usme se sustenta en la presencia histórica de explotación de arcilla y actividad ladrillera, visibles en diversos sectores del territorio. Aunque inicialmente se había considerado el barrio Santa Librada como unidad de análisis puntual, la propuesta se amplía a escala de localidad para obtener una visión más integral del fenómeno y reconocer múltiples focos de transformación asociados a la actividad extractiva.
+
+En la fase de desarrollo del proyecto se elaborará un mapa base del área de estudio que incluirá el límite administrativo de la localidad, vías principales, drenajes relevantes y la localización preliminar de sectores con evidencia de actividad minera o ladrillera.
+
+# Fuentes de datos
+
+El estudio se apoyará en fuentes de información raster y vectorial de acceso abierto, organizadas en una estrategia de análisis reproducible.
+
+## Imágenes satelitales
+
+La fuente principal será la serie Landsat, integrada por los sensores Landsat 5 TM, Landsat 7 ETM+, Landsat 8 OLI/TIRS y Landsat 9 OLI-2. Estas imágenes serán empleadas por su continuidad temporal, cobertura histórica y adecuación para análisis multitemporales de largo plazo. El periodo preliminar propuesto para el análisis abarca desde 1990 hasta 2024.
+
+Como apoyo para el periodo reciente se considerará el uso de Sentinel-2, especialmente en tareas de validación visual y contraste espacial, debido a su mejor resolución espacial en comparación con Landsat.
+
+## Información vectorial y cartografía base
+
+Se utilizarán límites administrativos de Bogotá y de la localidad de Usme, además de capas vectoriales complementarias como red vial, hidrografía y, de ser pertinente, coberturas temáticas de apoyo provenientes de geoportales oficiales y repositorios de datos abiertos.
+
+## Variables derivadas
+
+A partir de las imágenes satelitales se generarán índices espectrales orientados a fortalecer la separación temática entre clases de cobertura. Entre ellos se prevé el uso de NDVI, NDBI y BSI, por su utilidad en la discriminación de vegetación, áreas construidas y suelos expuestos.
+
+# Marco metodológico propuesto
+
+## Enfoque general
+
+La propuesta se desarrollará bajo un enfoque de análisis multitemporal de cobertura del suelo basado en sensores remotos, clasificación supervisada y detección de cambios. La lógica del procedimiento consistirá en construir compuestos temporales representativos, entrenar un modelo de clasificación para distinguir coberturas de interés y comparar los resultados entre distintos cortes temporales con el fin de cuantificar la expansión de áreas asociadas a extracción de arcilla.
+
+## Delimitación del área de interés
+
+En una primera etapa se definirá el límite espacial de la localidad de Usme como área principal de procesamiento. Sobre esta unidad se identificarán, mediante revisión preliminar de imágenes y cartografía de apoyo, sectores con evidencia histórica de actividad extractiva y ladrillera. Esta delimitación permitirá focalizar el análisis sin perder el contexto territorial completo de la localidad.
+
+## Construcción de la serie temporal
+
+Se seleccionarán imágenes Landsat correspondientes al periodo 1990--2024, priorizando escenas con baja nubosidad y condiciones comparables entre fechas. Para reducir la influencia de observaciones aisladas y mejorar la estabilidad de la señal espectral, se construirán compuestos temporales por años clave o por ventanas multianuales. De manera preliminar, se considera trabajar con cortes temporales como 1990, 1995, 2000, 2005, 2010, 2015, 2020 y 2024, aunque esta selección podrá ajustarse según disponibilidad y calidad de los datos.
+
+## Preprocesamiento
+
+Las imágenes serán sometidas a un proceso de filtrado y limpieza que incluirá enmascaramiento de nubes, selección de reflectancia de superficie y recorte al área de estudio. Asimismo, se procurará mantener consistencia temporal y estacional entre los cortes analizados para minimizar efectos derivados de la variabilidad intraanual.
+
+## Generación de variables espectrales
+
+Además de las bandas espectrales originales, se calcularán índices que apoyen la identificación de coberturas específicas. Entre las variables previstas se incluyen:
+
+- Índice de vegetación de diferencia normalizada (NDVI), para reforzar la detección de coberturas vegetales.
+- Índice de áreas construidas de diferencia normalizada (NDBI), para mejorar la separación de superficies urbanas o construidas.
+- Índice de suelo desnudo (BSI), para apoyar la discriminación de suelos expuestos y áreas intervenidas.
+
+La combinación de bandas e índices permitirá construir un conjunto de variables predictoras más robusto para la clasificación.
+
+## Definición de clases temáticas
+
+Se propone trabajar inicialmente con cuatro clases principales:
+
+1. Áreas asociadas a extracción de arcilla.
+2. Vegetación.
+3. Zona urbana o construida.
+4. Suelo desnudo.
+
+Esta estructura temática se considera adecuada para representar el fenómeno de interés y, al mismo tiempo, controlar posibles confusiones espectrales entre superficies mineras y otros suelos expuestos.
+
+## Muestras de entrenamiento
+
+La clasificación supervisada requerirá la construcción de muestras de entrenamiento representativas para cada clase. Estas muestras se obtendrán mediante fotointerpretación de imágenes satelitales, apoyadas en cartografía base y observación visual del territorio. Se buscará una distribución espacial adecuada de las muestras dentro del área de estudio y un equilibrio razonable entre clases.
+
+## Clasificación supervisada
+
+La propuesta contempla el uso del algoritmo Random Forest como método de clasificación supervisada. Este algoritmo se selecciona por su estabilidad, capacidad de generalización y buen desempeño en estudios de coberturas terrestres. Su aplicación permitirá incorporar un componente de aprendizaje automático al proyecto sin comprometer su viabilidad técnica dentro del tiempo disponible para la asignatura.
+
+## Detección de cambios
+
+Una vez obtenidos los mapas clasificados para los distintos cortes temporales, se realizará un análisis comparativo enfocado en la clase asociada a extracción de arcilla. Se calcularán cambios absolutos y relativos de superficie, y se buscará identificar patrones espaciales de expansión, persistencia o reconfiguración de las áreas extractivas en la localidad.
+
+## Validación
+
+El desempeño del modelo se evaluará mediante una matriz de confusión y métricas derivadas, como exactitud global y precisión por clase. La validación permitirá valorar la confiabilidad del producto temático y sustentar la interpretación de los cambios observados.
+
+## Entorno tecnológico
+
+El desarrollo se realizará mediante Google Earth Engine y Python, articulados dentro de un entorno reproducible en Docker y Visual Studio Code. Esta elección permitirá organizar el código, documentar las rutinas de procesamiento y facilitar la trazabilidad del análisis.
+
+# Justificación del uso de clasificación supervisada y aprendizaje automático
+
+La clasificación supervisada se considera la estrategia más adecuada para el presente proyecto porque el fenómeno de interés está claramente definido y se dispone de criterios interpretativos para identificar ejemplos de las clases temáticas. A diferencia de la clasificación no supervisada, en la cual el algoritmo agrupa píxeles según similitud sin conocimiento previo de las categorías finales, la clasificación supervisada permite orientar el proceso con base en muestras previamente etiquetadas, lo que incrementa el control sobre la interpretación temática y mejora la correspondencia entre el resultado cartográfico y el objetivo del estudio.
+
+Dentro de este enfoque, el uso de Random Forest introduce un componente de aprendizaje automático que resulta pertinente por su capacidad para manejar relaciones complejas entre variables espectrales y clases de cobertura. En contextos donde existen similitudes entre áreas mineras, suelos desnudos y superficies intervenidas, este algoritmo ofrece ventajas significativas frente a métodos más simples, ya que combina múltiples árboles de decisión y reduce la sensibilidad al ruido o a errores aislados en los datos de entrenamiento.
+
+# Resultados esperados
+
+Se espera que el proyecto produzca los siguientes resultados:
+
+1. Un mapa base del área de estudio con localización de la localidad de Usme y sectores de interés asociados a actividad extractiva.
+
+2. Una serie de mapas clasificados para distintos cortes temporales del periodo 1990--2024.
+
+3. Un mapa de cambio que permita visualizar la expansión espacial de áreas asociadas a extracción de arcilla.
+
+4. Una tabla de superficies por periodo para la clase de interés, expresada en hectáreas.
+
+5. Un análisis gráfico de la evolución temporal del área clasificada como extracción de arcilla.
+
+6. Una evaluación temática de la clasificación basada en indicadores de precisión.
+
+7. Una discusión territorial sobre la dinámica espacial del fenómeno y las posibilidades de aplicación del enfoque geomático propuesto.
+
+# Alcances y limitaciones previstas
+
+El principal alcance del proyecto consiste en generar una lectura espacio-temporal de largo plazo sobre la expansión de áreas asociadas a extracción de arcilla en Usme mediante una metodología reproducible y apoyada en sensores remotos. Se trata de una propuesta viable para el marco académico de la asignatura y con capacidad para producir evidencia cartográfica relevante.
+
+Entre las limitaciones previstas se reconoce la resolución espacial de Landsat, que puede dificultar la identificación precisa de superficies pequeñas o altamente fragmentadas. Asimismo, se anticipa cierta complejidad en la separación entre áreas mineras y otros suelos desnudos, razón por la cual será necesario fortalecer la selección de muestras, el uso de índices espectrales y la validación de resultados.
+
+# Cronograma preliminar
+
+| Fase | Actividad | Semanas |
+|---|---|---|
+| 1 | Delimitación del área de estudio y recopilación de insumos | 1--2 |
+| 2 | Descarga, exploración y organización de imágenes satelitales | 2--3 |
+| 3 | Preprocesamiento y generación de compuestos temporales | 3--5 |
+| 4 | Construcción de muestras de entrenamiento | 5--6 |
+| 5 | Clasificación supervisada con Random Forest | 6--8 |
+| 6 | Detección de cambios y cálculo de superficies | 8--9 |
+| 7 | Validación de resultados y ajustes metodológicos | 9--10 |
+| 8 | Redacción del informe final y organización del repositorio | 10--12 |
+
+# Productos esperados
+
+Los productos del proyecto serán:
+
+- Documento final en formato Quarto.
+- Repositorio de código en GitHub con scripts y descripción metodológica.
+- Mapas temáticos en formato digital.
+- Tablas y gráficos de cambio temporal.
+- Síntesis interpretativa del fenómeno espacial analizado.
+
+# Estrategia de reproducibilidad y apertura
+
+La propuesta adopta un enfoque de reproducibilidad mediante el uso de herramientas abiertas y flujos de trabajo documentados. El procesamiento de datos se realizará en Google Earth Engine desde Python, mientras que el entorno computacional se organizará en Docker para controlar dependencias y asegurar portabilidad. El desarrollo se gestionará en Visual Studio Code y el producto final se estructurará en Quarto. De manera complementaria, se prevé publicar los scripts en un repositorio de GitHub con su respectiva documentación.
+
+# Estructura preliminar del documento final
+
+El documento final del proyecto se organizará de la siguiente manera:
+
+1. Introducción y justificación.
+2. Objetivos.
+3. Área de estudio.
+4. Fuentes de datos.
+5. Metodología.
+6. Resultados.
+7. Discusión.
+8. Conclusiones.
+9. Referencias.
+10. Repositorio y anexos.
+
+# Referencias preliminares
+
+Breiman, L. (2001). Random forests. *Machine Learning, 45*(1), 5--32. https://doi.org/10.1023/A:1010933404324
+
+Gorelick, N., Hancher, M., Dixon, M., Ilyushchenko, S., Thau, D., & Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. *Remote Sensing of Environment, 202*, 18--27. https://doi.org/10.1016/j.rse.2017.06.031
+
+Lillesand, T., Kiefer, R. W., & Chipman, J. (2015). *Remote sensing and image interpretation* (7th ed.). Wiley.
+
+Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment, 148*, 42--57. https://doi.org/10.1016/j.rse.2014.02.015
+
+Wulder, M. A., Masek, J. G., Cohen, W. B., Loveland, T. R., & Woodcock, C. E. (2012). Opening the archive: How free data has enabled the science and monitoring promise of Landsat. *Remote Sensing of Environment, 122*, 2--10. https://doi.org/10.1016/j.rse.2012.01.010
