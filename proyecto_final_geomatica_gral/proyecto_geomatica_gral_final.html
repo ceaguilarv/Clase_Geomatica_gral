@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Carlos Aguilar">
+<meta name="author" content="Luis Gálvez">
+
+<title>Análisis multitemporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme (Bogotá) mediante Google Earth Engine y Python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="proyecto_geomatica_gral_final_files/libs/clipboard/clipboard.min.js"></script>
+<script src="proyecto_geomatica_gral_final_files/libs/quarto-html/quarto.js"></script>
+<script src="proyecto_geomatica_gral_final_files/libs/quarto-html/popper.min.js"></script>
+<script src="proyecto_geomatica_gral_final_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="proyecto_geomatica_gral_final_files/libs/quarto-html/anchor.min.js"></script>
+<link href="proyecto_geomatica_gral_final_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="proyecto_geomatica_gral_final_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="proyecto_geomatica_gral_final_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="proyecto_geomatica_gral_final_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="proyecto_geomatica_gral_final_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link active" data-scroll-target="#resumen"><span class="header-section-number">1</span> Resumen</a></li>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link" data-scroll-target="#abstract"><span class="header-section-number">2</span> Abstract</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link" data-scroll-target="#introducción"><span class="header-section-number">3</span> Introducción</a></li>
+  <li><a href="#planteamiento-del-problema" id="toc-planteamiento-del-problema" class="nav-link" data-scroll-target="#planteamiento-del-problema"><span class="header-section-number">4</span> Planteamiento del problema</a></li>
+  <li><a href="#hipótesis-de-trabajo" id="toc-hipótesis-de-trabajo" class="nav-link" data-scroll-target="#hipótesis-de-trabajo"><span class="header-section-number">5</span> Hipótesis de trabajo</a></li>
+  <li><a href="#objetivos" id="toc-objetivos" class="nav-link" data-scroll-target="#objetivos"><span class="header-section-number">6</span> Objetivos</a>
+  <ul class="collapse">
+  <li><a href="#objetivo-general" id="toc-objetivo-general" class="nav-link" data-scroll-target="#objetivo-general"><span class="header-section-number">6.1</span> Objetivo general</a></li>
+  <li><a href="#objetivos-específicos" id="toc-objetivos-específicos" class="nav-link" data-scroll-target="#objetivos-específicos"><span class="header-section-number">6.2</span> Objetivos específicos</a></li>
+  </ul></li>
+  <li><a href="#área-de-estudio" id="toc-área-de-estudio" class="nav-link" data-scroll-target="#área-de-estudio"><span class="header-section-number">7</span> Área de estudio</a></li>
+  <li><a href="#marco-conceptual" id="toc-marco-conceptual" class="nav-link" data-scroll-target="#marco-conceptual"><span class="header-section-number">8</span> Marco conceptual</a>
+  <ul class="collapse">
+  <li><a href="#teledetección-y-análisis-multitemporal-de-coberturas" id="toc-teledetección-y-análisis-multitemporal-de-coberturas" class="nav-link" data-scroll-target="#teledetección-y-análisis-multitemporal-de-coberturas"><span class="header-section-number">8.1</span> Teledetección y análisis multitemporal de coberturas</a></li>
+  <li><a href="#clasificación-supervisada-y-aprendizaje-automático" id="toc-clasificación-supervisada-y-aprendizaje-automático" class="nav-link" data-scroll-target="#clasificación-supervisada-y-aprendizaje-automático"><span class="header-section-number">8.2</span> Clasificación supervisada y aprendizaje automático</a></li>
+  <li><a href="#índices-espectrales" id="toc-índices-espectrales" class="nav-link" data-scroll-target="#índices-espectrales"><span class="header-section-number">8.3</span> Índices espectrales</a></li>
+  <li><a href="#minería-de-arcilla-actividad-ladrillera-y-gestión-del-riesgo" id="toc-minería-de-arcilla-actividad-ladrillera-y-gestión-del-riesgo" class="nav-link" data-scroll-target="#minería-de-arcilla-actividad-ladrillera-y-gestión-del-riesgo"><span class="header-section-number">8.4</span> Minería de arcilla, actividad ladrillera y gestión del riesgo</a></li>
+  </ul></li>
+  <li><a href="#fuentes-de-datos" id="toc-fuentes-de-datos" class="nav-link" data-scroll-target="#fuentes-de-datos"><span class="header-section-number">9</span> Fuentes de datos</a>
+  <ul class="collapse">
+  <li><a href="#imágenes-satelitales" id="toc-imágenes-satelitales" class="nav-link" data-scroll-target="#imágenes-satelitales"><span class="header-section-number">9.1</span> Imágenes satelitales</a></li>
+  <li><a href="#información-vectorial" id="toc-información-vectorial" class="nav-link" data-scroll-target="#información-vectorial"><span class="header-section-number">9.2</span> Información vectorial</a></li>
+  <li><a href="#productos-derivados" id="toc-productos-derivados" class="nav-link" data-scroll-target="#productos-derivados"><span class="header-section-number">9.3</span> Productos derivados</a></li>
+  </ul></li>
+  <li><a href="#metodología" id="toc-metodología" class="nav-link" data-scroll-target="#metodología"><span class="header-section-number">10</span> Metodología</a>
+  <ul class="collapse">
+  <li><a href="#delimitación-del-área-de-estudio" id="toc-delimitación-del-área-de-estudio" class="nav-link" data-scroll-target="#delimitación-del-área-de-estudio"><span class="header-section-number">10.1</span> Delimitación del área de estudio</a></li>
+  <li><a href="#construcción-de-mosaicos-landsat" id="toc-construcción-de-mosaicos-landsat" class="nav-link" data-scroll-target="#construcción-de-mosaicos-landsat"><span class="header-section-number">10.2</span> Construcción de mosaicos Landsat</a></li>
+  <li><a href="#variables-espectrales" id="toc-variables-espectrales" class="nav-link" data-scroll-target="#variables-espectrales"><span class="header-section-number">10.3</span> Variables espectrales</a></li>
+  <li><a href="#definición-de-clases-temáticas" id="toc-definición-de-clases-temáticas" class="nav-link" data-scroll-target="#definición-de-clases-temáticas"><span class="header-section-number">10.4</span> Definición de clases temáticas</a></li>
+  <li><a href="#muestras-de-entrenamiento-y-puntos-de-validación" id="toc-muestras-de-entrenamiento-y-puntos-de-validación" class="nav-link" data-scroll-target="#muestras-de-entrenamiento-y-puntos-de-validación"><span class="header-section-number">10.5</span> Muestras de entrenamiento y puntos de validación</a></li>
+  <li><a href="#balanceo-de-muestras" id="toc-balanceo-de-muestras" class="nav-link" data-scroll-target="#balanceo-de-muestras"><span class="header-section-number">10.6</span> Balanceo de muestras</a></li>
+  <li><a href="#clasificación-random-forest" id="toc-clasificación-random-forest" class="nav-link" data-scroll-target="#clasificación-random-forest"><span class="header-section-number">10.7</span> Clasificación Random Forest</a></li>
+  <li><a href="#validación" id="toc-validación" class="nav-link" data-scroll-target="#validación"><span class="header-section-number">10.8</span> Validación</a></li>
+  <li><a href="#análisis-auxiliar-con-edificaciones-2024" id="toc-análisis-auxiliar-con-edificaciones-2024" class="nav-link" data-scroll-target="#análisis-auxiliar-con-edificaciones-2024"><span class="header-section-number">10.9</span> Análisis auxiliar con edificaciones 2024</a></li>
+  </ul></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados"><span class="header-section-number">11</span> Resultados</a>
+  <ul class="collapse">
+  <li><a href="#desempeño-general-del-modelo" id="toc-desempeño-general-del-modelo" class="nav-link" data-scroll-target="#desempeño-general-del-modelo"><span class="header-section-number">11.1</span> Desempeño general del modelo</a></li>
+  <li><a href="#áreas-por-clase" id="toc-áreas-por-clase" class="nav-link" data-scroll-target="#áreas-por-clase"><span class="header-section-number">11.2</span> Áreas por clase</a></li>
+  <li><a href="#clasificación-supervisada-1990" id="toc-clasificación-supervisada-1990" class="nav-link" data-scroll-target="#clasificación-supervisada-1990"><span class="header-section-number">11.3</span> Clasificación supervisada 1990</a></li>
+  <li><a href="#dinámica-de-áreas-asociadas-a-minería-de-arcilla" id="toc-dinámica-de-áreas-asociadas-a-minería-de-arcilla" class="nav-link" data-scroll-target="#dinámica-de-áreas-asociadas-a-minería-de-arcilla"><span class="header-section-number">11.4</span> Dinámica de áreas asociadas a minería de arcilla</a></li>
+  <li><a href="#clasificación-supervisada-2015" id="toc-clasificación-supervisada-2015" class="nav-link" data-scroll-target="#clasificación-supervisada-2015"><span class="header-section-number">11.5</span> Clasificación supervisada 2015</a></li>
+  <li><a href="#clasificación-supervisada-2024" id="toc-clasificación-supervisada-2024" class="nav-link" data-scroll-target="#clasificación-supervisada-2024"><span class="header-section-number">11.6</span> Clasificación supervisada 2024</a></li>
+  <li><a href="#comparación-entre-clases-críticas" id="toc-comparación-entre-clases-críticas" class="nav-link" data-scroll-target="#comparación-entre-clases-críticas"><span class="header-section-number">11.7</span> Comparación entre clases críticas</a></li>
+  <li><a href="#coherencia-espacial-con-edificaciones-2024" id="toc-coherencia-espacial-con-edificaciones-2024" class="nav-link" data-scroll-target="#coherencia-espacial-con-edificaciones-2024"><span class="header-section-number">11.8</span> Coherencia espacial con edificaciones 2024</a></li>
+  </ul></li>
+  <li><a href="#discusión" id="toc-discusión" class="nav-link" data-scroll-target="#discusión"><span class="header-section-number">12</span> Discusión</a>
+  <ul class="collapse">
+  <li><a href="#transformación-territorial-de-la-minería-de-arcilla-en-usme" id="toc-transformación-territorial-de-la-minería-de-arcilla-en-usme" class="nav-link" data-scroll-target="#transformación-territorial-de-la-minería-de-arcilla-en-usme"><span class="header-section-number">12.1</span> Transformación territorial de la minería de arcilla en Usme</a></li>
+  <li><a href="#minería-suelo-desnudo-y-urbano-una-frontera-difusa" id="toc-minería-suelo-desnudo-y-urbano-una-frontera-difusa" class="nav-link" data-scroll-target="#minería-suelo-desnudo-y-urbano-una-frontera-difusa"><span class="header-section-number">12.2</span> Minería, suelo desnudo y urbano: una frontera difusa</a></li>
+  <li><a href="#interpretación-del-urbano-histórico" id="toc-interpretación-del-urbano-histórico" class="nav-link" data-scroll-target="#interpretación-del-urbano-histórico"><span class="header-section-number">12.3</span> Interpretación del urbano histórico</a></li>
+  <li><a href="#relevancia-para-gestión-del-riesgo" id="toc-relevancia-para-gestión-del-riesgo" class="nav-link" data-scroll-target="#relevancia-para-gestión-del-riesgo"><span class="header-section-number">12.4</span> Relevancia para gestión del riesgo</a></li>
+  </ul></li>
+  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones"><span class="header-section-number">13</span> Limitaciones</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">14</span> Conclusiones</a></li>
+  <li><a href="#recomendaciones" id="toc-recomendaciones" class="nav-link" data-scroll-target="#recomendaciones"><span class="header-section-number">15</span> Recomendaciones</a></li>
+  <li><a href="#reproducibilidad-y-apertura" id="toc-reproducibilidad-y-apertura" class="nav-link" data-scroll-target="#reproducibilidad-y-apertura"><span class="header-section-number">16</span> Reproducibilidad y apertura</a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias"><span class="header-section-number">17</span> Referencias</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="proyecto_geomatica_gral_final.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis multitemporal de la expansión minera asociada a la extracción de arcilla en la localidad de Usme (Bogotá) mediante Google Earth Engine y Python</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores/as</div>
+    <div class="quarto-title-meta-contents">
+             <p>Carlos Aguilar </p>
+             <p>Luis Gálvez </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="resumen" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Resumen</h1>
+<p>La localidad de Usme, ubicada en el suroriente de Bogotá D.C., ha experimentado transformaciones territoriales asociadas a la extracción de arcilla, la actividad ladrillera, la expansión urbana, la presencia de suelo desnudo y procesos de revegetalización o cierre de frentes extractivos. Este trabajo analiza la dinámica multitemporal de áreas asociadas a extracción de arcilla y actividad ladrillera durante el periodo 1990–2024, mediante imágenes Landsat procesadas en Google Earth Engine y Python.</p>
+<p>La metodología se basó en la construcción de mosaicos multitemporales para los años 1990, 1995, 2000, 2010, 2015, 2020 y 2024, el cálculo de variables espectrales e índices como NDVI, NDBI y BSI, y la aplicación de clasificación supervisada mediante Random Forest. Se definieron cinco clases temáticas: vegetación o cobertura agro-natural, urbano/construido, minería de arcilla o actividad ladrillera, suelo desnudo no minero y agua. La clasificación fue entrenada con polígonos de referencia y validada con puntos puros independientes. Adicionalmente, para el año 2024 se desarrolló un análisis auxiliar de coherencia espacial entre la clasificación obtenida y una capa distrital de edificaciones.</p>
+<p>Los resultados muestran una dinámica no lineal de la clase asociada a minería de arcilla, con incremento entre 1990 y 2015, año en el que se estimó la mayor extensión, seguido por una reducción hacia 2020 y 2024. Esta reducción no debe interpretarse únicamente como desaparición de la actividad extractiva, sino como una transición territorial compleja que incluye cierre de frentes, revegetalización superficial, intervenciones de bioingeniería, permanencia de infraestructura ladrillera y expansión urbana sobre áreas previamente intervenidas. Desde una perspectiva de gestión del riesgo, estos resultados permiten identificar zonas donde la transformación de antiguos terrenos mineros hacia usos urbanos requiere análisis posteriores sobre estabilidad, drenaje, compactación y susceptibilidad a procesos de remoción en masa.</p>
+<p><strong>Palabras clave:</strong> teledetección, Google Earth Engine, Random Forest, minería de arcilla, ladrilleras, Usme, Landsat, gestión del riesgo.</p>
+</section>
+<section id="abstract" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Abstract</h1>
+<p>The locality of Usme, located in southeastern Bogotá D.C., has experienced territorial transformations associated with clay extraction, brick-making activity, urban expansion, bare soil surfaces, and revegetation or closure processes of former extraction fronts. This study analyzes the multitemporal dynamics of areas associated with clay extraction and brick-making activity during the 1990–2024 period using Landsat imagery processed through Google Earth Engine and Python.</p>
+<p>The methodology was based on the construction of multitemporal mosaics for the years 1990, 1995, 2000, 2010, 2015, 2020 and 2024, the calculation of spectral variables and indices such as NDVI, NDBI and BSI, and the application of supervised classification using Random Forest. Five thematic classes were defined: vegetation or agro-natural cover, urban/built-up areas, clay mining or brick-making activity, non-mining bare soil, and water. The classification was trained with reference polygons and validated with independent pure points. Additionally, for 2024, an auxiliary spatial coherence analysis was performed between the classification output and an official district building layer.</p>
+<p>The results show a non-linear dynamic of the clay mining class, with an increase between 1990 and 2015, followed by a reduction toward 2020 and 2024. This reduction should not be interpreted solely as the disappearance of extractive activity, but rather as a complex territorial transition involving closure of extraction fronts, superficial revegetation, bioengineering interventions, remaining brick-making infrastructure, and urban expansion over previously disturbed areas. From a risk management perspective, these findings help identify zones where the transformation of former mining areas into urban uses requires further analysis related to slope stability, drainage, soil compaction, and susceptibility to mass movement processes.</p>
+<p><strong>Keywords:</strong> remote sensing, Google Earth Engine, Random Forest, clay mining, brick-making, Usme, Landsat, risk management.</p>
+</section>
+<section id="introducción" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Introducción</h1>
+<p>La localidad de Usme, en el suroriente de Bogotá D.C., constituye un territorio estratégico para comprender las relaciones entre expansión urbana, actividades extractivas, transformación de coberturas y gestión del riesgo. Su configuración espacial combina áreas urbanas consolidadas, sectores periurbanos en proceso de ocupación, zonas rurales, coberturas agropecuarias, cuerpos de agua y sectores históricamente vinculados con la extracción de arcilla para la producción de ladrillo.</p>
+<p>La actividad ladrillera ha sido parte de la historia territorial de Usme y ha dejado huellas visibles en el paisaje. Estas huellas se expresan en frentes de extracción, superficies expuestas, patios de almacenamiento, hornos, ramadas, infraestructura industrial, modificación de laderas, cambios en la cobertura vegetal y, en algunos casos, posterior ocupación urbana de terrenos previamente alterados. En sectores como los asociados a Ladrillera Santa Fe, Ladrillera Brasilia, Ladrillera Alemana y Ladrillera Santa Librada, la relación entre extracción de arcilla, cierre de frentes y urbanización posterior permite observar dinámicas territoriales complejas.</p>
+<p>Desde una perspectiva geomática, el seguimiento multitemporal de estas transformaciones requiere fuentes de información consistentes en el tiempo. La serie Landsat permite analizar cambios de cobertura durante varias décadas, debido a su continuidad histórica, disponibilidad abierta y cobertura global. Al integrar estas imágenes con plataformas como Google Earth Engine, lenguajes de programación como Python y algoritmos de aprendizaje automático como Random Forest, es posible construir flujos reproducibles para clasificar coberturas y cuantificar cambios espaciales.</p>
+<p>No obstante, el análisis de áreas asociadas a extracción de arcilla presenta desafíos metodológicos. Las superficies mineras, los suelos desnudos, las vías no pavimentadas, los barrios periurbanos, las zonas en construcción y la infraestructura ladrillera pueden presentar respuestas espectrales similares. En Usme, esta dificultad aumenta por la presencia de barrios en desarrollo, calles sin pavimentar, potreros con suelo arado, pastos secos y áreas donde la industria minera ha cedido o transformado espacios posteriormente ocupados por urbanización.</p>
+<p>En este contexto, el presente trabajo desarrolla un análisis multitemporal de la expansión y transformación de áreas asociadas a extracción de arcilla y actividad ladrillera en la localidad de Usme durante el periodo 1990–2024. El enfoque combina clasificación supervisada, índices espectrales, validación independiente y análisis auxiliar de edificaciones recientes. La interpretación se orienta no solo a cuantificar áreas clasificadas como minería, sino también a discutir las transiciones territoriales entre actividad extractiva, suelo desnudo, revegetalización, infraestructura ladrillera y expansión urbana, con énfasis en su relevancia para la gestión del riesgo.</p>
+</section>
+<section id="planteamiento-del-problema" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Planteamiento del problema</h1>
+<p>La extracción de arcilla y la actividad ladrillera han producido transformaciones acumulativas en la localidad de Usme. Estas transformaciones incluyen remoción de material, alteración de laderas, generación de superficies expuestas, aparición de patios e infraestructura productiva, pérdida o modificación de coberturas vegetales y cambios posteriores hacia usos urbanos o periurbanos.</p>
+<p>A pesar de la relevancia de este fenómeno, persiste la necesidad de caracterizar de manera espacial y multitemporal cómo han cambiado las áreas asociadas a extracción de arcilla y actividad ladrillera en la localidad. No basta con identificar la presencia de ladrilleras o frentes extractivos en un momento específico; es necesario analizar su dinámica temporal, los posibles periodos de expansión o reducción, y su relación con otras coberturas como urbano, suelo desnudo, vegetación y agua.</p>
+<p>El problema adquiere mayor importancia desde el enfoque de gestión del riesgo. La ocupación urbana de terrenos previamente intervenidos por minería puede implicar condiciones particulares de estabilidad, drenaje, compactación, relleno, erosión y susceptibilidad a procesos de remoción en masa. Aunque este trabajo no desarrolla un análisis geotécnico ni de amenaza, sí permite identificar espacialmente zonas de transición entre minería, suelo desnudo y urbanización reciente, que pueden orientar estudios posteriores.</p>
+<p>Por tanto, la pregunta que guía el trabajo es:</p>
+<blockquote class="blockquote">
+<p>¿Cómo ha cambiado espacial y temporalmente la extensión de las áreas asociadas a la extracción de arcilla y actividad ladrillera en la localidad de Usme durante el periodo 1990–2024?</p>
+</blockquote>
+</section>
+<section id="hipótesis-de-trabajo" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Hipótesis de trabajo</h1>
+<p>Las áreas asociadas a extracción de arcilla en la localidad de Usme han presentado una dinámica espacial significativa durante las últimas décadas, caracterizada por fases de expansión, cierre, revegetalización superficial y transición hacia usos urbanos o periurbanos. Esta dinámica puede ser identificada y cuantificada mediante clasificación supervisada de imágenes Landsat multitemporales procesadas en Google Earth Engine con apoyo de Python.</p>
+</section>
+<section id="objetivos" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Objetivos</h1>
+<section id="objetivo-general" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="objetivo-general"><span class="header-section-number">6.1</span> Objetivo general</h2>
+<p>Analizar la dinámica espacio-temporal de las áreas asociadas a extracción de arcilla y actividad ladrillera en la localidad de Usme, Bogotá, durante el periodo 1990–2024, mediante imágenes satelitales multitemporales, Google Earth Engine, Python y clasificación supervisada con Random Forest.</p>
+</section>
+<section id="objetivos-específicos" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="objetivos-específicos"><span class="header-section-number">6.2</span> Objetivos específicos</h2>
+<ol type="1">
+<li><p>Delimitar el área de estudio e identificar sectores con presencia histórica o reciente de actividad extractiva y ladrillera en la localidad de Usme.</p></li>
+<li><p>Construir una serie temporal de imágenes Landsat y derivar variables espectrales útiles para diferenciar vegetación, urbano/construido, minería de arcilla, suelo desnudo y agua.</p></li>
+<li><p>Aplicar una clasificación supervisada basada en Random Forest para estimar la distribución espacial de las coberturas seleccionadas en distintos cortes temporales.</p></li>
+<li><p>Cuantificar la variación temporal de las áreas clasificadas como minería de arcilla o actividad ladrillera entre 1990 y 2024.</p></li>
+<li><p>Evaluar la coherencia espacial de la clase urbano/construido para 2024 mediante una capa auxiliar de edificaciones del Distrito.</p></li>
+<li><p>Discutir los resultados desde una perspectiva de transformación territorial y gestión del riesgo.</p></li>
+</ol>
+</section>
+</section>
+<section id="área-de-estudio" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Área de estudio</h1>
+<p>El área de estudio corresponde a la localidad de Usme, una de las veinte localidades de Bogotá D.C., ubicada en el sector suroriental de la ciudad. Usme presenta una configuración territorial mixta, con zonas urbanas, periurbanas, rurales, áreas de montaña, coberturas agropecuarias, cuerpos de agua y sectores históricamente asociados a extracción de arcilla y producción ladrillera.</p>
+<p>La elección de la localidad de Usme responde a la presencia de varios puntos afectados por actividad extractiva, por lo cual el análisis se desarrolló a escala de localidad y no únicamente sobre un barrio o sector puntual. Esta decisión permitió abordar el fenómeno de manera integral, considerando la distribución espacial de la actividad ladrillera y su relación con procesos de urbanización, revegetalización y suelo desnudo.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%201.%20Área%20de%20estudio%20y%20localización%20general.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 1. Área de estudio y localización general de la localidad de Usme, Bogotá D.C.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="marco-conceptual" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Marco conceptual</h1>
+<section id="teledetección-y-análisis-multitemporal-de-coberturas" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="teledetección-y-análisis-multitemporal-de-coberturas"><span class="header-section-number">8.1</span> Teledetección y análisis multitemporal de coberturas</h2>
+<p>La teledetección permite observar la superficie terrestre mediante sensores remotos instalados en plataformas satelitales. En estudios de cobertura y uso del suelo, las imágenes multiespectrales permiten identificar patrones asociados a vegetación, agua, áreas urbanas, suelos expuestos y superficies intervenidas. Cuando estas observaciones se organizan en series temporales, es posible analizar cambios espaciales y cuantificar transformaciones acumulativas.</p>
+<p>La serie Landsat es especialmente útil para análisis multitemporales de largo plazo debido a su continuidad histórica desde la década de 1970, su resolución espacial de 30 m en bandas ópticas y su disponibilidad abierta. En este trabajo, Landsat se empleó como fuente principal para garantizar consistencia temporal entre los años analizados.</p>
+</section>
+<section id="clasificación-supervisada-y-aprendizaje-automático" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="clasificación-supervisada-y-aprendizaje-automático"><span class="header-section-number">8.2</span> Clasificación supervisada y aprendizaje automático</h2>
+<p>La clasificación supervisada consiste en entrenar un algoritmo mediante muestras previamente etiquetadas, de manera que el modelo aprenda las características espectrales de cada clase y luego asigne una categoría a los píxeles de la imagen. A diferencia de la clasificación no supervisada, donde el algoritmo agrupa píxeles similares sin conocimiento previo de las clases, la clasificación supervisada permite orientar el resultado hacia categorías temáticas definidas por el investigador.</p>
+<p>En este proyecto se empleó Random Forest, un algoritmo de aprendizaje automático basado en múltiples árboles de decisión. Random Forest es ampliamente utilizado en clasificación de coberturas terrestres por su capacidad de manejar variables correlacionadas, reducir sobreajuste y operar de manera robusta con conjuntos de datos multibanda e índices espectrales.</p>
+</section>
+<section id="índices-espectrales" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="índices-espectrales"><span class="header-section-number">8.3</span> Índices espectrales</h2>
+<p>Además de las bandas originales de Landsat, se calcularon índices espectrales para mejorar la diferenciación entre coberturas:</p>
+<ul>
+<li><p><strong>NDVI (Normalized Difference Vegetation Index):</strong> permite resaltar la vegetación y estimar vigor o presencia de cobertura vegetal.</p></li>
+<li><p><strong>NDBI (Normalized Difference Built-up Index):</strong> ayuda a identificar superficies construidas o urbanas mediante el contraste entre SWIR y NIR.</p></li>
+<li><p><strong>BSI (Bare Soil Index):</strong> favorece la detección de suelos desnudos o superficies expuestas, aspecto importante en estudios de minería, canteras y áreas intervenidas.</p></li>
+</ul>
+<p>Estos índices fueron integrados al conjunto de variables predictoras para fortalecer la clasificación.</p>
+</section>
+<section id="minería-de-arcilla-actividad-ladrillera-y-gestión-del-riesgo" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="minería-de-arcilla-actividad-ladrillera-y-gestión-del-riesgo"><span class="header-section-number">8.4</span> Minería de arcilla, actividad ladrillera y gestión del riesgo</h2>
+<p>La extracción de arcilla modifica el terreno mediante excavaciones, cortes, remoción de material y generación de superficies expuestas. En contextos periurbanos como Usme, estas áreas pueden experimentar posteriormente procesos de cierre, revegetalización, cobertura superficial inducida o expansión urbana.</p>
+<p>Desde la gestión del riesgo, la transformación de antiguos frentes mineros hacia usos urbanos resulta relevante. La urbanización sobre terrenos previamente excavados, rellenados o alterados puede requerir análisis detallados sobre estabilidad de laderas, drenaje, compactación, erosión y susceptibilidad a movimientos en masa. Aunque este proyecto no realiza modelación de amenaza o riesgo, sí aporta una base cartográfica para identificar zonas de transición territorial que podrían requerir estudios posteriores.</p>
+</section>
+</section>
+<section id="fuentes-de-datos" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Fuentes de datos</h1>
+<p>El estudio utilizó fuentes raster y vectoriales organizadas en un flujo de análisis reproducible.</p>
+<section id="imágenes-satelitales" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="imágenes-satelitales"><span class="header-section-number">9.1</span> Imágenes satelitales</h2>
+<p>La fuente principal fue la serie Landsat Collection 2 Level 2, incluyendo sensores Landsat 5 TM, Landsat 7 ETM+, Landsat 8 OLI y Landsat 9 OLI-2. Se trabajó con imágenes de reflectancia de superficie, aplicando enmascaramiento de nubes, sombras, cirros, nieve y píxeles saturados.</p>
+<p>Los años procesados fueron:</p>
+<ul>
+<li>1990</li>
+<li>1995</li>
+<li>2000</li>
+<li>2010</li>
+<li>2015</li>
+<li>2020</li>
+<li>2024</li>
+</ul>
+<p>Aunque el análisis interpretativo principal se centra en 1990, 2000, 2010, 2015, 2020 y 2024, se conserva 1995 como corte intermedio de apoyo dentro de los resultados cuantitativos.</p>
+</section>
+<section id="información-vectorial" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="información-vectorial"><span class="header-section-number">9.2</span> Información vectorial</h2>
+<p>Se emplearon los siguientes insumos vectoriales:</p>
+<ul>
+<li>Límite de la localidad de Usme.</li>
+<li>Polígonos de entrenamiento por clase.</li>
+<li>Puntos puros de validación.</li>
+<li>Capa de edificaciones 2024 del Distrito, usada únicamente como insumo auxiliar para evaluar la coherencia espacial de la clase urbano/construido en el año reciente.</li>
+</ul>
+</section>
+<section id="productos-derivados" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="productos-derivados"><span class="header-section-number">9.3</span> Productos derivados</h2>
+<p>Como productos derivados se generaron:</p>
+<ul>
+<li>Mapas clasificados multitemporales.</li>
+<li>Tabla de áreas por clase y año.</li>
+<li>Métricas de validación por año.</li>
+<li>Gráficos de evolución temporal.</li>
+<li>Mapa de coherencia espacial entre clasificación 2024 y edificaciones.</li>
+</ul>
+</section>
+</section>
+<section id="metodología" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Metodología</h1>
+<p>La metodología se desarrolló en cinco fases principales: delimitación del área de estudio, construcción de mosaicos Landsat, generación de variables espectrales, clasificación supervisada y validación, y análisis auxiliar con edificaciones 2024.</p>
+<section id="delimitación-del-área-de-estudio" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="delimitación-del-área-de-estudio"><span class="header-section-number">10.1</span> Delimitación del área de estudio</h2>
+<p>El límite de la localidad de Usme fue cargado como Asset en Google Earth Engine y utilizado para filtrar, recortar y exportar los resultados raster. El área de estudio se mantuvo constante en todos los años para garantizar comparabilidad temporal.</p>
+</section>
+<section id="construcción-de-mosaicos-landsat" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="construcción-de-mosaicos-landsat"><span class="header-section-number">10.2</span> Construcción de mosaicos Landsat</h2>
+<p>Para cada año se seleccionaron imágenes Landsat disponibles dentro del periodo anual completo. Las imágenes fueron filtradas espacialmente por el límite de Usme y temporalmente por año. Posteriormente se aplicó una máscara de nubes, sombras, cirros, nieve y saturación radiométrica usando las bandas de calidad de Landsat Collection 2 Level 2.</p>
+<p>Las bandas ópticas fueron escaladas y renombradas de manera homogénea para permitir el uso de distintos sensores en una misma estructura de análisis. Para Landsat 5 y 7 se utilizaron las bandas SR_B1, SR_B2, SR_B3, SR_B4, SR_B5 y SR_B7; para Landsat 8 y 9 se utilizaron SR_B2, SR_B3, SR_B4, SR_B5, SR_B6 y SR_B7. En todos los casos se renombraron como Blue, Green, Red, NIR, SWIR1 y SWIR2.</p>
+<p>El mosaico anual se construyó mediante la mediana de las imágenes disponibles para cada año. Este procedimiento redujo el efecto de observaciones atípicas, nubes residuales y variaciones radiométricas puntuales.</p>
+</section>
+<section id="variables-espectrales" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="variables-espectrales"><span class="header-section-number">10.3</span> Variables espectrales</h2>
+<p>A cada mosaico anual se agregaron los índices NDVI, NDBI y BSI. El conjunto final de variables predictoras estuvo compuesto por:</p>
+<ul>
+<li>Blue</li>
+<li>Green</li>
+<li>Red</li>
+<li>NIR</li>
+<li>SWIR1</li>
+<li>SWIR2</li>
+<li>NDVI</li>
+<li>NDBI</li>
+<li>BSI</li>
+</ul>
+</section>
+<section id="definición-de-clases-temáticas" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="definición-de-clases-temáticas"><span class="header-section-number">10.4</span> Definición de clases temáticas</h2>
+<p>Se definieron cinco clases:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Código</th>
+<th>Clase</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Vegetación / cobertura agro-natural</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Urbano / construido</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Minería de arcilla / actividad ladrillera</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>Suelo desnudo no minero</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Agua</td>
+</tr>
+</tbody>
+</table>
+<p>La inclusión de la clase suelo desnudo no minero fue metodológicamente importante para reducir la confusión entre minería, áreas urbanas y superficies expuestas no asociadas directamente a extracción de arcilla.</p>
+</section>
+<section id="muestras-de-entrenamiento-y-puntos-de-validación" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="muestras-de-entrenamiento-y-puntos-de-validación"><span class="header-section-number">10.5</span> Muestras de entrenamiento y puntos de validación</h2>
+<p>Las muestras de entrenamiento se construyeron mediante polígonos seleccionados manualmente con criterios de pureza temática. Los puntos de validación fueron definidos como puntos puros independientes, separados de los polígonos de entrenamiento. Debido a la complejidad del paisaje periurbano de Usme, se priorizó la calidad temática de las muestras sobre la cantidad.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%202.%20Muestras%20de%20entrenamiento%20y%20validación.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 2. Distribución de polígonos de entrenamiento y puntos puros de validación.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Los puntos y polígonos fueron seleccionados principalmente a partir de imágenes recientes, lo cual constituye una limitación para la interpretación histórica. Algunas zonas actualmente asociadas a actividad minera no existían como frentes extractivos en 1990. Por tanto, los resultados multitemporales se interpretan como una aproximación apoyada en clasificación supervisada, revisión visual y conocimiento contextual del territorio.</p>
+</section>
+<section id="balanceo-de-muestras" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="balanceo-de-muestras"><span class="header-section-number">10.6</span> Balanceo de muestras</h2>
+<p>El muestreo inicial generó un fuerte desbalance entre clases, con mayor número de píxeles para vegetación y suelo desnudo, y menor cantidad para minería de arcilla. Para evitar que las clases mayoritarias dominaran el entrenamiento del modelo, se implementó un balanceo por clase, limitando el número máximo de muestras por clase al tamaño disponible de la clase minoritaria.</p>
+<p>Esta decisión permitió mejorar la representación relativa de la clase minera dentro del proceso de entrenamiento, sin incorporar muestras dudosas ni artificiales.</p>
+</section>
+<section id="clasificación-random-forest" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="clasificación-random-forest"><span class="header-section-number">10.7</span> Clasificación Random Forest</h2>
+<p>Para cada año se entrenó un clasificador Random Forest con 200 árboles, usando las bandas e índices espectrales como variables predictoras. El modelo se entrenó con los polígonos de referencia balanceados y se aplicó al mosaico anual correspondiente.</p>
+</section>
+<section id="validación" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="validación"><span class="header-section-number">10.8</span> Validación</h2>
+<p>La validación se realizó con puntos puros independientes mediante matriz de confusión, exactitud global, coeficiente Kappa, precisión del productor y precisión del usuario. Esta validación permitió evaluar el desempeño del clasificador en cada año y evidenciar que los años recientes presentaron mejores métricas que los años iniciales.</p>
+</section>
+<section id="análisis-auxiliar-con-edificaciones-2024" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="análisis-auxiliar-con-edificaciones-2024"><span class="header-section-number">10.9</span> Análisis auxiliar con edificaciones 2024</h2>
+<p>Para el año 2024 se incorporó una capa vectorial de edificaciones del Distrito como insumo auxiliar. Esta capa no fue usada como entrenamiento histórico, debido a que representa una condición reciente del territorio. Su uso se limitó a contrastar la coherencia espacial de la clase urbano/construido y a revisar la posible superposición entre minería, infraestructura ladrillera y superficies construidas.</p>
+<p>Se generó un raster de coherencia espacial con las siguientes categorías:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Código</th>
+<th>Categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Urbano con buildings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Urbano sin buildings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Minería con buildings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>Minería sin buildings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Suelo desnudo con buildings</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="resultados" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Resultados</h1>
+<section id="desempeño-general-del-modelo" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="desempeño-general-del-modelo"><span class="header-section-number">11.1</span> Desempeño general del modelo</h2>
+<p>Las métricas de validación muestran una mejora progresiva del desempeño del clasificador desde los años iniciales hacia los años recientes. En 1990 se obtuvo una exactitud global de 0,624 y un Kappa de 0,519. En contraste, los años 2020 y 2024 presentaron valores superiores, con exactitud global de 0,845 y 0,839, respectivamente, y Kappa cercano a 0,80.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/grafico_accuracy_kappa.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<figcaption>Evolución de las métricas de validación Accuracy y Kappa por año.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Esta mejora puede explicarse por una mayor disponibilidad de imágenes útiles en los años recientes, mejor calidad radiométrica de los sensores Landsat 8 y 9, y mayor estabilidad de los mosaicos construidos. En los años iniciales, especialmente 1990, la clasificación presentó mayor confusión entre urbano, suelo desnudo y minería.</p>
+</section>
+<section id="áreas-por-clase" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="áreas-por-clase"><span class="header-section-number">11.2</span> Áreas por clase</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Áreas clasificadas por clase y métricas de validación por año.</caption>
+<colgroup>
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">anio</th>
+<th style="text-align: right;">accuracy</th>
+<th style="text-align: right;">kappa</th>
+<th style="text-align: right;">vegetacion_ha</th>
+<th style="text-align: right;">urbano_ha</th>
+<th style="text-align: right;">mineria_ha</th>
+<th style="text-align: right;">suelo_desnudo_ha</th>
+<th style="text-align: right;">agua_ha</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">4283.59</td>
+<td style="text-align: right;">1974.52</td>
+<td style="text-align: right;">432.83</td>
+<td style="text-align: right;">6569.54</td>
+<td style="text-align: right;">115.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1995</td>
+<td style="text-align: right;">0.71</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">9881.50</td>
+<td style="text-align: right;">1221.83</td>
+<td style="text-align: right;">507.33</td>
+<td style="text-align: right;">9417.62</td>
+<td style="text-align: right;">460.64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">5788.74</td>
+<td style="text-align: right;">1126.15</td>
+<td style="text-align: right;">450.21</td>
+<td style="text-align: right;">7165.38</td>
+<td style="text-align: right;">104.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">9390.18</td>
+<td style="text-align: right;">747.16</td>
+<td style="text-align: right;">573.70</td>
+<td style="text-align: right;">10140.41</td>
+<td style="text-align: right;">137.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">9204.18</td>
+<td style="text-align: right;">889.66</td>
+<td style="text-align: right;">640.37</td>
+<td style="text-align: right;">9950.80</td>
+<td style="text-align: right;">143.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">9838.89</td>
+<td style="text-align: right;">1005.28</td>
+<td style="text-align: right;">518.62</td>
+<td style="text-align: right;">9741.40</td>
+<td style="text-align: right;">154.42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">9681.96</td>
+<td style="text-align: right;">1181.82</td>
+<td style="text-align: right;">301.50</td>
+<td style="text-align: right;">10184.25</td>
+<td style="text-align: right;">139.39</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Los resultados evidencian que el suelo desnudo y la vegetación/cobertura agro-natural ocupan las mayores extensiones dentro de la localidad. Esta condición es coherente con el carácter mixto de Usme, donde coexisten zonas rurales, áreas agropecuarias, superficies expuestas y sectores periurbanos.</p>
+<p>La clase urbano/construido presenta una dinámica inestable en los primeros años de la serie, especialmente en 1990. Esta situación no debe interpretarse como una mayor extensión urbana real en ese año, sino como evidencia de confusión espectral con suelo desnudo y superficies intervenidas. Esta limitación fue confirmada mediante revisión visual de los mapas.</p>
+</section>
+<section id="clasificación-supervisada-1990" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="clasificación-supervisada-1990"><span class="header-section-number">11.3</span> Clasificación supervisada 1990</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%203.%20Clasificación%20supervisada%201990.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 3. Clasificación supervisada de coberturas en Usme, 1990.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La clasificación de 1990 funciona como línea base del análisis multitemporal, pero requiere interpretación cautelosa. El mapa muestra una sobreestimación de la clase urbano/construido en sectores donde visualmente predominan superficies desnudas o intervenidas. Esta confusión se relaciona con la similitud espectral entre materiales expuestos, zonas mineras, vías no pavimentadas y áreas urbanas incipientes.</p>
+</section>
+<section id="dinámica-de-áreas-asociadas-a-minería-de-arcilla" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="dinámica-de-áreas-asociadas-a-minería-de-arcilla"><span class="header-section-number">11.4</span> Dinámica de áreas asociadas a minería de arcilla</h2>
+<p>La clase minería de arcilla/actividad ladrillera muestra una dinámica no lineal. En 1990 se estimaron 432,83 ha; en 2000, 450,21 ha; en 2010, 573,70 ha; y en 2015 se alcanzó el valor máximo de la serie con 640,37 ha. Posteriormente, la clase disminuyó a 518,62 ha en 2020 y 301,50 ha en 2024.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/grafico_area_minera.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<figcaption>Área clasificada como minería de arcilla / actividad ladrillera entre 1990 y 2024.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Esta reducción hacia 2024 no debe interpretarse únicamente como desaparición de la actividad extractiva. A partir de la revisión visual y del conocimiento territorial del área de estudio, varios sectores históricamente vinculados con explotación de arcilla han transitado hacia procesos de cierre, revegetalización superficial, bioingeniería y expansión urbana. En algunos casos, antiguos frentes extractivos fueron cubiertos con lonas verdes y posteriormente colonizados por pastos; en otros, áreas previamente intervenidas pasaron a ser urbanizadas o vendidas para construcción, como ocurre en sectores asociados a la Ladrillera Santa Fe.</p>
+</section>
+<section id="clasificación-supervisada-2015" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="clasificación-supervisada-2015"><span class="header-section-number">11.5</span> Clasificación supervisada 2015</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%204.%20Clasificación%20supervisada%202015.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 4. Clasificación supervisada de coberturas en Usme, 2015.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>El año 2015 representa el máximo de área clasificada como minería de arcilla dentro de la serie. El mapa permite observar la distribución espacial del sector ladrillero y de superficies asociadas a extracción, patios, frentes intervenidos y zonas de suelo expuesto relacionadas con la actividad productiva.</p>
+</section>
+<section id="clasificación-supervisada-2024" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="clasificación-supervisada-2024"><span class="header-section-number">11.6</span> Clasificación supervisada 2024</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%205.%20Clasificación%20supervisada%202024.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 5. Clasificación supervisada de coberturas en Usme, 2024.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>El mapa de 2024 muestra una reducción de la clase minería respecto a 2015, pero también evidencia persistencia de zonas intervenidas, suelo desnudo y áreas urbanas. La lectura territorial sugiere que parte de la reducción minera corresponde a cierre de frentes, revegetalización o transición hacia urbano/construido. Esta situación es especialmente relevante en una localidad donde algunos barrios se han desarrollado en áreas cedidas o transformadas por la industria minera.</p>
+</section>
+<section id="comparación-entre-clases-críticas" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="comparación-entre-clases-críticas"><span class="header-section-number">11.7</span> Comparación entre clases críticas</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/grafico_clases_criticas.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<figcaption>Comparación multitemporal de clases críticas: urbano/construido, minería de arcilla y suelo desnudo.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La comparación entre urbano, minería y suelo desnudo permite observar que las tres clases mantienen relaciones estrechas en el territorio. El suelo desnudo domina gran parte de la serie y puede incluir potreros con suelo arado, zonas rurales intervenidas, áreas expuestas y superficies no necesariamente asociadas a minería. La clase minería se ubica en un rango menor de área, pero su importancia territorial es alta debido a su asociación con transformación de laderas, infraestructura ladrillera y expansión urbana posterior.</p>
+</section>
+<section id="coherencia-espacial-con-edificaciones-2024" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="coherencia-espacial-con-edificaciones-2024"><span class="header-section-number">11.8</span> Coherencia espacial con edificaciones 2024</h2>
+<p>El análisis auxiliar con la capa de edificaciones 2024 permitió evaluar la coherencia espacial de la clase urbano/construido. Los resultados muestran que el 84,15 % del área clasificada como urbano en 2024 coincide con presencia o proximidad a edificaciones, mientras que el 15,85 % no presenta coincidencia con dicha capa.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Cruce auxiliar entre clasificación 2024 y edificaciones distritales.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">indicador</th>
+<th style="text-align: right;">area_ha</th>
+<th style="text-align: right;">porcentaje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Urbano total clasificado</td>
+<td style="text-align: right;">1181.82</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Urbano con buildings</td>
+<td style="text-align: right;">994.45</td>
+<td style="text-align: right;">84.15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Urbano sin buildings</td>
+<td style="text-align: right;">187.37</td>
+<td style="text-align: right;">15.85</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Minería total clasificada</td>
+<td style="text-align: right;">301.50</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Minería con buildings</td>
+<td style="text-align: right;">185.71</td>
+<td style="text-align: right;">61.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Minería sin buildings</td>
+<td style="text-align: right;">115.78</td>
+<td style="text-align: right;">38.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Suelo desnudo total clasificado</td>
+<td style="text-align: right;">10184.25</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Suelo desnudo con buildings</td>
+<td style="text-align: right;">703.77</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/grafico_buildings_2024.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<figcaption>Cruce auxiliar entre clasificación 2024 y edificaciones distritales.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La superposición entre minería y edificaciones también fue significativa: el 61,6 % del área clasificada como minería coincide con edificaciones. Este resultado no se interpretó automáticamente como error, debido a que la actividad ladrillera incluye infraestructura productiva como hornos, patios, ramadas, bodegas, cubiertas industriales y construcciones asociadas. No obstante, también evidencia la dificultad de separar espectralmente minería, urbano e infraestructura industrial en paisajes periurbanos.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="resultados/Mapa%206.%20Coherencia%20entre%20clasificación%202024%20y%20edificaciones.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<figcaption>Mapa 6. Coherencia espacial entre clasificación 2024 y edificaciones distritales.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="discusión" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Discusión</h1>
+<section id="transformación-territorial-de-la-minería-de-arcilla-en-usme" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="transformación-territorial-de-la-minería-de-arcilla-en-usme"><span class="header-section-number">12.1</span> Transformación territorial de la minería de arcilla en Usme</h2>
+<p>Los resultados muestran que la dinámica de las áreas asociadas a minería de arcilla en Usme no responde a una tendencia lineal simple. La clase minera aumenta entre 1990 y 2015, pero disminuye posteriormente hacia 2024. Esta reducción no representa necesariamente una recuperación ambiental integral ni la desaparición completa del impacto minero. Más bien, evidencia una transformación territorial en la que antiguos frentes de explotación pasan por procesos de cierre, cobertura superficial, revegetalización, infraestructura residual y, en algunos casos, urbanización.</p>
+<p>El conocimiento local del área permite interpretar que en sectores vinculados con Ladrillera Santa Fe, Ladrillera Brasilia, Ladrillera Alemana y Ladrillera Santa Librada existen procesos diferenciados. Algunas áreas conservan actividad o infraestructura ladrillera; otras han sido cubiertas o revegetalizadas; y algunas han transitado hacia expansión urbana. Esta mezcla explica por qué la clase minera puede coincidir espacialmente con edificaciones y por qué su delimitación espectral no siempre corresponde únicamente a cantera abierta.</p>
+</section>
+<section id="minería-suelo-desnudo-y-urbano-una-frontera-difusa" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="minería-suelo-desnudo-y-urbano-una-frontera-difusa"><span class="header-section-number">12.2</span> Minería, suelo desnudo y urbano: una frontera difusa</h2>
+<p>La principal dificultad metodológica del estudio fue separar minería de arcilla, suelo desnudo y urbano/construido. En Usme, muchas calles no están pavimentadas, existen barrios periurbanos en desarrollo, zonas de suelo arado, potreros secos y superficies industriales asociadas a ladrilleras. Todo esto produce una frontera espectral difusa.</p>
+<p>El suelo desnudo clasificado incluye principalmente potreros con suelo arado, superficies agropecuarias intervenidas y áreas expuestas no necesariamente mineras. La vegetación puede confundirse con suelo desnudo cuando predominan pastos secos o coberturas de baja densidad. Esta situación es particularmente relevante en imágenes Landsat, debido a la resolución espacial de 30 m y a la mezcla de coberturas dentro de un mismo píxel.</p>
+</section>
+<section id="interpretación-del-urbano-histórico" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="interpretación-del-urbano-histórico"><span class="header-section-number">12.3</span> Interpretación del urbano histórico</h2>
+<p>El área urbana estimada para 1990 resultó artificialmente alta. Esta situación fue reconocida como mala clasificación asociada a la captura de suelo desnudo o superficies intervenidas como urbano/construido. Por esta razón, la serie urbana no se interpreta como una tendencia directa de expansión urbana histórica, sino como una clase útil para analizar relaciones recientes y contrastar con edificaciones en 2024.</p>
+<p>La clasificación urbana reciente, en cambio, presenta mayor respaldo. El cruce con edificaciones mostró que el 84,15 % del área urbana clasificada en 2024 coincide con presencia o proximidad a buildings. Esto permite usar la clase urbana de 2024 con mayor confianza para interpretar la relación entre urbanización actual y antiguos espacios intervenidos.</p>
+</section>
+<section id="relevancia-para-gestión-del-riesgo" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="relevancia-para-gestión-del-riesgo"><span class="header-section-number">12.4</span> Relevancia para gestión del riesgo</h2>
+<p>Desde el enfoque de gestión del riesgo, el hallazgo más relevante no es únicamente la variación del área minera, sino la transición entre minería, suelo desnudo, revegetalización y urbanización. La ocupación de terrenos previamente intervenidos por extracción de arcilla puede implicar condiciones particulares de estabilidad, drenaje, compactación y susceptibilidad a procesos de remoción en masa.</p>
+<p>Este trabajo no evalúa amenaza ni riesgo de manera directa, pero aporta una base espacial para identificar sectores donde la expansión urbana se relaciona con áreas históricamente intervenidas por minería. Estos sectores podrían ser priorizados en estudios posteriores que integren geología, pendiente, suelos, inventarios de movimientos en masa, drenaje, licencias mineras, información catastral y cartografía de amenaza.</p>
+</section>
+</section>
+<section id="limitaciones" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Limitaciones</h1>
+<p>El estudio presenta varias limitaciones que deben ser consideradas al interpretar los resultados.</p>
+<p>Primero, las muestras de entrenamiento y validación fueron construidas principalmente con apoyo en imágenes recientes. Algunas áreas actualmente asociadas a actividad minera no existían como frentes extractivos en 1990, lo que limita la capacidad de representar con precisión condiciones históricas para todas las clases.</p>
+<p>Segundo, la resolución espacial de Landsat, de 30 m, puede generar mezcla espectral en paisajes periurbanos heterogéneos. Un mismo píxel puede incluir techo, vía destapada, patio, vegetación, suelo desnudo o infraestructura ladrillera.</p>
+<p>Tercero, la clase urbana presentó sobreestimación en los años iniciales, especialmente en 1990. Por esta razón, su interpretación histórica debe hacerse con cautela.</p>
+<p>Cuarto, la clase agua se mantuvo como categoría principal, pero su detección se concentra en cuerpos de agua relativamente extensos, como el sistema de represas de La Regadera. Drenajes lineales como el río Tunjuelo no son suficientemente anchos para ser detectados de manera consistente por Landsat a 30 m.</p>
+<p>Quinto, el análisis con edificaciones solo aplica para 2024 y no puede extrapolarse a años anteriores. La capa de buildings representa una condición reciente y no debe usarse como verdad histórica para entrenar o validar clasificaciones de 1990, 2000 o 2010.</p>
+</section>
+<section id="conclusiones" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Conclusiones</h1>
+<p>El análisis multitemporal permitió identificar una dinámica espacial significativa de las áreas asociadas a extracción de arcilla y actividad ladrillera en la localidad de Usme durante el periodo 1990–2024.</p>
+<p>La clase minera presentó una tendencia no lineal, con incremento entre 1990 y 2015 y reducción posterior hacia 2024. El máximo estimado se presentó en 2015, con aproximadamente 640,37 ha clasificadas como minería de arcilla o actividad ladrillera, mientras que en 2024 se estimaron 301,50 ha.</p>
+<p>La reducción reciente de la clase minera no debe interpretarse únicamente como desaparición de la actividad extractiva. Los resultados y la revisión territorial sugieren procesos de cierre de frentes, revegetalización superficial, bioingeniería, permanencia de infraestructura ladrillera y transición hacia usos urbanos.</p>
+<p>La inclusión de la clase suelo desnudo no minero fue fundamental para mejorar la separación entre minería, urbano y superficies expuestas. Sin embargo, la similitud espectral entre estas clases continúa siendo una de las principales fuentes de incertidumbre.</p>
+<p>La validación mostró una mejora del desempeño del modelo hacia los años recientes. En 2024, la clasificación alcanzó una exactitud global de 0,839 y un Kappa de 0,790, valores adecuados para un análisis multitemporal exploratorio con Landsat y cinco clases temáticas.</p>
+<p>El cruce auxiliar con edificaciones 2024 permitió respaldar la coherencia espacial de la clase urbana reciente, dado que el 84,15 % del área clasificada como urbano coincidió con presencia o proximidad a edificaciones. La coincidencia de 61,6 % entre minería y buildings evidencia la mezcla entre infraestructura ladrillera, superficies construidas y áreas extractivas.</p>
+<p>Desde la gestión del riesgo, el principal aporte del trabajo es la identificación de zonas de transición entre minería, suelo desnudo y expansión urbana. Estas áreas podrían requerir estudios posteriores sobre estabilidad, drenaje, compactación, erosión y susceptibilidad a procesos de remoción en masa.</p>
+</section>
+<section id="recomendaciones" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Recomendaciones</h1>
+<p>Se recomienda complementar el análisis con información geológica, cartografía de amenaza por movimientos en masa, modelos digitales de elevación, pendientes, licencias mineras, información catastral y registros históricos de actividad ladrillera.</p>
+<p>También se recomienda mejorar la validación histórica mediante interpretación visual específica por año, especialmente para las clases urbano, minería y suelo desnudo. En futuros trabajos, podrían construirse muestras diferenciadas por década o emplearse fuentes auxiliares históricas para reducir la incertidumbre temporal.</p>
+<p>Para el análisis reciente, se recomienda profundizar en la relación entre edificaciones 2024 y antiguos frentes mineros, especialmente en sectores donde la expansión urbana se superpone con áreas previamente clasificadas como minería o suelo desnudo.</p>
+<p>Finalmente, se recomienda considerar este tipo de análisis multitemporal como insumo preliminar para la planificación territorial y la gestión del riesgo en zonas periurbanas de Bogotá, donde los cambios de cobertura pueden estar asociados a procesos extractivos, urbanización informal, cierre de industrias y transformación de laderas.</p>
+</section>
+<section id="reproducibilidad-y-apertura" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Reproducibilidad y apertura</h1>
+<p>El procesamiento se desarrolló mediante Google Earth Engine y Python, usando un flujo reproducible basado en scripts. Los insumos espaciales fueron organizados como Assets en Google Earth Engine y los productos derivados fueron exportados como archivos raster, tablas CSV, gráficos y mapas finales.</p>
+<p>Los principales productos del proyecto incluyen:</p>
+<ul>
+<li>Script multianual de clasificación Random Forest.</li>
+<li>Script de análisis auxiliar con edificaciones 2024.</li>
+<li>Script de generación de tablas y gráficos.</li>
+<li>Rásteres clasificados por año.</li>
+<li>Tabla de áreas y métricas.</li>
+<li>Mapas finales en formato PNG.</li>
+<li>Documento final en Quarto.</li>
+</ul>
+</section>
+<section id="referencias" class="level1" data-number="17">
+<h1 data-number="17"><span class="header-section-number">17</span> Referencias</h1>
+<p>Breiman, L. (2001). Random forests. <em>Machine Learning, 45</em>(1), 5–32. https://doi.org/10.1023/A:1010933404324</p>
+<p>Gorelick, N., Hancher, M., Dixon, Ilyushchenko, S., Thau, D., &amp; Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. <em>Remote Sensing of Environment, 202</em>, 18–27. https://doi.org/10.1016/j.rse.2017.06.031</p>
+<p>Lillesand, T., Kiefer, R. W., &amp; Chipman, J. (2015). <em>Remote sensing and image interpretation</em> (7th ed.). Wiley.</p>
+<p>Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., &amp; Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. <em>Remote Sensing of Environment, 148</em>, 42–57. https://doi.org/10.1016/j.rse.2014.02.015</p>
+<p>Rigol Sánchez, J. P. (2019). <em>Aplicación de sistemas de información geográfica y teledetección en exploración minera</em> (Tesis doctoral, Universidad de Granada).</p>
+<p>Wulder, M. A., Masek, J. G., Cohen, W. B., Loveland, T. R., &amp; Woodcock, C. E. (2012). Opening the archive: How free data has enabled the science and monitoring promise of Landsat. <em>Remote Sensing of Environment, 122</em>, 2–10. https://doi.org/10.1016/j.rse.2012.01.010</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

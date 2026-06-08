@@ -1,0 +1,353 @@
+/************************************************************
+ * CLASIFICACIÓN RANDOM FOREST - SENTINEL 2
+ * Google Earth Engine
+ *
+ * FUNCIONES:
+ * 1. Mosaico Sentinel-2
+ * 2. Filtrado de nubes
+ * 3. Suavizado (filtro paso bajo)
+ * 4. NDVI, NDBI y BSI
+ * 5. Stack multibanda
+ * 6. Random Forest
+ * 7. Validación
+ * 8. Exportación
+ ************************************************************/
+
+
+// =====================================================
+// 1. ÁREA DE ESTUDIO
+// =====================================================
+
+var roi = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Localidad_Usme'
+);
+
+Map.centerObject(roi, 10);
+
+Map.addLayer(roi, {}, 'ROI');
+
+
+// =====================================================
+// 2. FECHAS
+// =====================================================
+
+var fechaInicio = '2024-01-01';
+var fechaFin    = '2024-12-31';
+
+
+// =====================================================
+// 3. FUNCIÓN DE MÁSCARA DE NUBES
+// =====================================================
+
+function maskS2clouds(image) {
+
+  var qa = image.select('QA60');
+
+  var cloudBitMask  = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+    .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+
+  return image
+    .updateMask(mask)
+    .divide(10000)
+    .copyProperties(image, ['system:time_start']);
+}
+
+
+// =====================================================
+// 4. COLECCIÓN SENTINEL 2
+// =====================================================
+
+var s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .filterBounds(roi)
+  .filterDate(fechaInicio, fechaFin)
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+  .map(maskS2clouds);
+
+print('Cantidad imágenes:', s2.size());
+
+
+// =====================================================
+// 5. MOSAICO
+// =====================================================
+
+var mosaico = s2
+  .median()
+  .clip(roi);
+
+
+// =====================================================
+// 6. FILTRO PASO BAJO
+// =====================================================
+
+var kernel = ee.Kernel.gaussian({
+  radius: 2,
+  sigma: 1,
+  units: 'pixels',
+  normalize: true
+});
+
+var suavizado = mosaico.convolve(kernel);
+
+
+// =====================================================
+// 7. SELECCIÓN DE BANDAS
+// =====================================================
+
+var bandas = suavizado.select([
+  'B2',   // Azul
+  'B3',   // Verde
+  'B4',   // Rojo
+  'B8',   // NIR
+  'B11',  // SWIR1
+  'B12'   // SWIR2
+]);
+
+
+// =====================================================
+// 8. ÍNDICES ESPECTRALES
+// =====================================================
+
+// NDVI
+var ndvi = bandas
+  .normalizedDifference(['B8', 'B4'])
+  .rename('NDVI');
+
+
+// NDBI
+var ndbi = bandas
+  .normalizedDifference(['B11', 'B8'])
+  .rename('NDBI');
+
+
+// BSI
+var bsi = bandas.expression(
+  '((SWIR + RED) - (NIR + BLUE)) / ((SWIR + RED) + (NIR + BLUE))',
+  {
+    SWIR: bandas.select('B11'),
+    RED : bandas.select('B4'),
+    NIR : bandas.select('B8'),
+    BLUE: bandas.select('B2')
+  }
+).rename('BSI');
+
+
+// =====================================================
+// 9. STACK MULTIBANDA
+// =====================================================
+
+var imagenFinal = bandas
+  .addBands(ndvi)
+  .addBands(ndbi)
+  .addBands(bsi);
+
+print('Bandas finales:', imagenFinal.bandNames());
+
+
+// =====================================================
+// 10. VISUALIZACIÓN RGB
+// =====================================================
+
+Map.addLayer(imagenFinal, {
+  bands: ['B4', 'B3', 'B2'],
+  min: 0,
+  max: 0.3
+}, 'RGB');
+
+
+// =====================================================
+// 11. CARGAR MUESTRAS DE ENTRENAMIENTO
+// =====================================================
+
+// IMPORTANTE:
+// Cada shapefile debe contener un atributo:
+// class
+//
+// Natural  = 0
+// Urbano   = 1
+// Mineria  = 2
+// Agua     = 3
+// Agricola = 4
+
+
+var Natural = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Natural'
+);
+
+var Urbano = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Urbano'
+);
+
+var Mineria = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Mineria'
+);
+
+var Agua = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Agua'
+);
+
+var Agricola = ee.FeatureCollection(
+  'projects/ee-lgalvez75-488016/assets/Agricola'
+);
+
+
+// =====================================================
+// 12. UNIR MUESTRAS
+// =====================================================
+
+var trainingPolygons = Natural
+  .merge(Urbano)
+  .merge(Mineria)
+  .merge(Agua)
+  .merge(Agricola);
+
+print('Cantidad polígonos:',
+      trainingPolygons.size());
+
+
+// =====================================================
+// 13. EXTRAER MUESTRAS
+// =====================================================
+
+var training = imagenFinal.sampleRegions({
+  collection: trainingPolygons,
+  properties: ['class'],
+  scale: 10,
+  tileScale: 4,
+  geometries: false
+});
+
+
+// =====================================================
+// 14. REDUCIR CANTIDAD DE MUESTRAS
+// =====================================================
+
+training = training
+  .randomColumn('random')
+  .limit(10000);
+
+print('Cantidad muestras:',
+      training.size());
+
+
+// =====================================================
+// 15. DIVISIÓN TRAIN / TEST
+// =====================================================
+
+var trainingSet = training.filter(
+  ee.Filter.lt('random', 0.7)
+);
+
+var validationSet = training.filter(
+  ee.Filter.gte('random', 0.7)
+);
+
+print('Training:',
+      trainingSet.size());
+
+print('Validation:',
+      validationSet.size());
+
+
+// =====================================================
+// 16. ENTRENAR RANDOM FOREST
+// =====================================================
+
+var classifier = ee.Classifier.smileRandomForest({
+  numberOfTrees: 200,
+  bagFraction: 0.7,
+  seed: 42
+}).train({
+  features: trainingSet,
+  classProperty: 'class',
+  inputProperties: imagenFinal.bandNames()
+});
+
+
+// =====================================================
+// 17. CLASIFICACIÓN
+// =====================================================
+
+var clasificacion = imagenFinal.classify(classifier);
+
+
+// =====================================================
+// 18. VISUALIZAR CLASIFICACIÓN
+// =====================================================
+
+Map.addLayer(clasificacion, {
+  min: 0,
+  max: 4,
+  palette: [
+    '006400', // Natural
+    'ff0000', // Urbano
+    '808080', // Mineria
+    '0000ff', // Agua
+    'ffff00'  // Agricola
+  ]
+}, 'Clasificación RF');
+
+
+// =====================================================
+// 19. VALIDACIÓN
+// =====================================================
+
+var validated = validationSet.classify(classifier);
+
+var confusionMatrix = validated.errorMatrix(
+  'class',
+  'classification'
+);
+
+print('Matriz de confusión:',
+      confusionMatrix);
+
+print('Exactitud global:',
+      confusionMatrix.accuracy());
+
+print('Kappa:',
+      confusionMatrix.kappa());
+
+
+// =====================================================
+// 20. IMPORTANCIA DE VARIABLES
+// =====================================================
+
+var importance = ee.Dictionary(
+  classifier.explain().get('importance')
+);
+
+print('Importancia variables:',
+      importance);
+
+
+// =====================================================
+// 21. EXPORTAR CLASIFICACIÓN
+// =====================================================
+
+Export.image.toDrive({
+  image: clasificacion,
+  description: 'RF_Usme_2024',
+  folder: 'GEE',
+  fileNamePrefix: 'RF_Usme_2024',
+  region: roi.geometry(),
+  scale: 10,
+  maxPixels: 1e13
+});
+
+
+// =====================================================
+// 22. EXPORTAR STACK MULTIBANDA
+// =====================================================
+
+Export.image.toDrive({
+  image: imagenFinal,
+  description: 'Stack_Usme_2024',
+  folder: 'GEE',
+  fileNamePrefix: 'Stack_Usme_2024',
+  region: roi.geometry(),
+  scale: 10,
+  maxPixels: 1e13
+});
